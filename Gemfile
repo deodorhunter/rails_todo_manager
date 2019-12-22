@@ -47,3 +47,6 @@ gem "factory_bot_rails", "~> 5.1"
 group :test do
   gem 'shoulda-matchers'
 end
+gem "graphql", "~> 1.9"
+
+gem 'graphiql-rails', group: :development

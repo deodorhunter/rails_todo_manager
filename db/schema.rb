@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_22_155300) do
+ActiveRecord::Schema.define(version: 2019_12_22_181056) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 2019_12_22_155300) do
     t.text "value", null: false
     t.boolean "completed", default: false
     t.string "category"
-    t.date "overdue"
+    t.datetime "overdue"
     t.string "assignee", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
