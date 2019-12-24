@@ -46,6 +46,8 @@ gem "factory_bot_rails", "~> 5.1"
 
 group :test do
   gem 'shoulda-matchers'
+  gem 'rspec-graphql_matchers'
+  gem 'database_cleaner'
 end
 gem "graphql", "~> 1.9"
 

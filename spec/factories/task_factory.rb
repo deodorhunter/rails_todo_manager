@@ -1,9 +1,9 @@
 FactoryBot.define do
     factory :task do
-      user
-      overdue {Date.tomorrow}
+      overdue {1.day.from_now}
       value {'Capire Ruby !10giorni @user2 #rubyonrails'}
-      assignee {['user2']}
       category {'rubyonrails'}
+      association :owner, factory: :user
+      association :assignee, factory: :user
     end
 end

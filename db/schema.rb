@@ -10,27 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_22_181056) do
+ActiveRecord::Schema.define(version: 2019_12_24_164546) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "tasks", force: :cascade do |t|
-    t.bigint "user_id", null: false
+  create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "owner_id", null: false
     t.text "value", null: false
     t.boolean "completed", default: false
     t.string "category"
     t.datetime "overdue"
-    t.string "assignee", default: [], array: true
+    t.uuid "assignee_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["assignee"], name: "index_tasks_on_assignee", using: :gin
+    t.index ["assignee_id"], name: "index_tasks_on_assignee_id"
     t.index ["category"], name: "index_tasks_on_category", using: :gin
-    t.index ["user_id"], name: "index_tasks_on_user_id"
+    t.index ["owner_id"], name: "index_tasks_on_owner_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "username", null: false
     t.string "email", null: false
     t.string "password", null: false
@@ -40,5 +41,4 @@ ActiveRecord::Schema.define(version: 2019_12_22_181056) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  add_foreign_key "tasks", "users"
 end
