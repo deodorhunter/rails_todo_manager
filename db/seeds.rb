@@ -30,9 +30,9 @@ Task.create!(
       category: nil,
     },
     {
-      value: "Sistemare alexa @John #nerd",  
+      value: "Sistemare alexa @John #nerd !today",  
       owner: john,
-      overdue: nil,
+      overdue: Date.today,
       assignee: john,
       completed: false,
       category: '#nerd',

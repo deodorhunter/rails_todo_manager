@@ -20,14 +20,12 @@ RSpec.describe User do
         it{ should validate_presence_of(:password) }
     end    
     it 'email is unique' do
-        user2 = build(:user, email: user.email)
-        puts user.inspect
-        puts user2.inspect
-        expect(user2).to_not be_valid
+        # curly brances needed or else expression will be evaluated immediatly and will raise error
+        expect{create(:user, email: user.email)}.to raise_error
     end    
     it 'username is unique' do
-        user2 = build(:user, username: user.username)
-        expect(user2).to_not be_valid
+        # curly brances needed or else expression will be evaluated immediatly and will raise error
+        expect{create(:user, username: user.username)}.to raise_error
     end 
     it { should have_many(:tasks)}
    

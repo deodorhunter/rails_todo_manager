@@ -2,16 +2,19 @@ require 'rails_helper'
 
 
 Rspec.describe Mutations::AddTaskMutation, type: :request do
+    subject { described_class }
+    # avail type definer in our tests
+    types = GraphQL::Define::TypeDefiner.instance
 
     let!(:user) {create(:user, username: 'Martina')}
 
     let!(:assignee) {create(:user, username: 'JD')}
-
+    
     def query(user_id:)
         %(mutation{
             createTask(
                 userId: #{user_id}
-                value: 'Test task @JD !oggi #test'
+                value: 'Test task @JD !tomorrow #test'
             ){
                 id
                 value
@@ -28,7 +31,10 @@ Rspec.describe Mutations::AddTaskMutation, type: :request do
         TodoManagerSchema.execute(query(user_id: user.id)).as_json
       end
 
-    describe '.resolve' do
+
+    
+  
+    describe 'add a task' do
         it 'creates a task' do
             expect do
                 post '/graphql', params: { query: query(user_id: user.id) }
@@ -43,11 +49,11 @@ Rspec.describe Mutations::AddTaskMutation, type: :request do
     
             expect(data).to include(
                 'id'              => be_present,
-                'value'           => 'Test task @JD !oggi #test',
+                'value'           => 'Test task @JD !tomorrow #test',
                 'overdue'         => DateTime.tomorrow,
                 'category'        => '#test',
-                'assignee'        => ['JD'],
-                'user'            => { 'id' => user.id.to_s }
+                'assignee'        => assignee,
+                'user'            => user
             )
         end
     end
