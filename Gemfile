@@ -44,6 +44,8 @@ gem "rspec-rails", "~> 3.9"
 
 gem "factory_bot_rails", "~> 5.1"
 
+gem 'fuubar'
+
 group :test do
   gem 'shoulda-matchers'
   gem 'rspec-graphql_matchers'

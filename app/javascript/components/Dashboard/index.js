@@ -9,9 +9,15 @@ const Dashboard = gql`
       id
       value
       category
-      assignee
+      assignee{
+        id
+        email
+        username
+      }
       overdue
-      user {
+      owner {
+        id
+        email
         username
       }
     }
