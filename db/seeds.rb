@@ -10,13 +10,13 @@
 john = User.create!(
   email: "john.doe@example.com",
   username: "John",
-  password: "Doe"
+  password: "123456"
 )
 
 jane = User.create!(
   email: "jane.doe@example.com",
   username: "Jane",
-  password: "Doe"
+  password: "123456"
 )
 
 Task.create!(

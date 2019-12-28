@@ -1,0 +1,59 @@
+query AllTasksQuery($userId: ID!)
+{
+    allUserTasks(userId: $userId) {
+        id
+        value
+        category
+        assignee{
+            id
+            email
+            username
+        }
+        overdue
+        owner {
+            id
+            email
+            username
+        }
+    }
+}
+
+query OwnedTasksQuery($ownerId: ID!)
+{
+    ownedTasks(ownerId: $ownerId) {
+        id
+        value
+        category
+        assignee{
+            id
+            email
+            username
+        }
+        overdue
+        owner {
+            id
+            email
+            username
+        }
+    }
+}
+
+query AssignedTasksQuery($assigneeId: ID!)
+{
+    assignedTasks(assigneeId: $assigneeId) {
+        id
+        value
+        category
+        assignee{
+            id
+            email
+            username
+        }
+        overdue
+        owner {
+            id
+            email
+            username
+        }
+    }
+}

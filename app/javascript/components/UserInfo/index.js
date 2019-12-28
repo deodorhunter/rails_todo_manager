@@ -1,19 +1,22 @@
 import React, { useRef } from 'react';
 import { Query, Mutation } from "react-apollo";
+import { useApolloClient } from "@apollo/react-hooks";
 import { Me, SignMeIn } from "./operations.graphql";
 import cs from "./styles";
 
 const UserInfo = () => {
-    const input = useRef(null);
-  
+    const emailField = useRef(null);
+    const passwordField = useRef(null);
+    const client = useApolloClient();
+    console.log(client)
     return (
       <div className={cs.panel}>
-        <Query query={Me}>
+        {/* <Query query={Me}>
           {({ data, loading }) => {
-              console.log(data)
+              console.log(data, localStorage)
             if (loading) return '...Loading';
             if (!data.me) {
-              return (
+              return ( */}
                 <Mutation
                   mutation={SignMeIn}
                   update={(cache, { data: { signIn } }) => {
@@ -30,21 +33,33 @@ const UserInfo = () => {
                       <div className={cs.signIn}>
                         <form
                           onSubmit={event => {
-                            console.log(input.current.value, event)
+                            debugger
+                            console.log(emailField, passwordField)
+                            const data = {
+                              'email': emailField.current.value,
+                              'password': passwordField.current.value
+                            }
                             signIn({
-                              variables: { email: input.current.value },
+                              variables: { email: data },
                             }).then(({ data: { signIn: { token } } }) => {
                               if (token) {
+                                console.log(token)
                                 localStorage.setItem('tdmToken', token);
                               }
                             });
                           }}
                         >
                           <input
-                            ref={input}
+                            ref={emailField}
                             type="email"
                             className={cs.input}
-                            placeholder="your email"
+                            placeholder="Email"
+                          />
+                          <input
+                            ref={passwordField}
+                            type="password"
+                            className={cs.input}
+                            placeholder="password"
                           />
                           <input
                             type="submit"
@@ -59,10 +74,24 @@ const UserInfo = () => {
               );
             }
   
-            const { username } = data.me;
-            return <div className={cs.info}>😈 {username}</div>;
-          }}
-        </Query>
+            {/* const { username } = data.me; */}
+            {/* return ( */}
+              {/* <div>
+                {/* <div className={cs.info}>😈 {username}</div> */}
+                {/* <button onClick={() => {
+                  console.log('will logout... soon')
+                  // client.resetStore();
+                  localStorage.clear()
+                  console.log(client, localStorage.getItem('tdmToken'));
+
+                }
+                }>
+                  Log out
+                </button> */}
+              {/* </div>  */}
+            {/* ); */}
+          {/* }} */}
+        {/* </Query> */}
       </div>
     );
   };

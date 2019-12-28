@@ -1,18 +1,19 @@
 # spec/graphql/types/query_type_spec.rb
 require "rails_helper"
+require_relative "../test_helpers"
+include GraphQL::TestHelpers
 
-RSpec.describe Types::QueryType do
-  describe "tasks" do
+RSpec.describe Queries::OwnedTasks, type: :query do
+  describe "find all owned tasks" do
     let!(:user) {create(:user, username: 'Martina', email: 'martina@example.com')}
     let!(:owner) {create(:user)}
     let!(:tasks) { 
       create(:task, assignee: user, owner: owner, value: 'Test task @JD !domani #test', category: '#test') 
     }
-   
-
-    let(:query) do
-      %(query {
-        tasks {
+    let(:query_type) {"ownedTasks"}
+    let(:query_string){
+      %(query MyTasks($ownerId: ID!) {
+        ownedTasks(ownerId: $ownerId) {
           id
           value
           overdue
@@ -20,32 +21,32 @@ RSpec.describe Types::QueryType do
           assignee{
             id
             username
-            email
           }
           owner{
             id
             username
-            email
           }
         }
       })
+    }
+
+    before do
+      query(query_string, variables:{
+        ownerId: owner.id
+      })
     end
-
-    subject(:result) do
-      TodoManagerSchema.execute(query).as_json
-    end
-
-    # Task.find_by_sql("select t.*, jsonb_agg(to_jsonb(u) - 'password') as assignee from tasks as t left join users u on u.id::varchar = any(t.assignee) group by t.id")
-
-  
     it "returns value correctly" do        
-      expect(result.dig("data", "tasks")).to eq([{
+      expect(gql_response.data[query_type]).to eq([{
         'id'              => tasks.id,
         'value'           => 'Test task @JD !domani #test',
         'overdue'         => 1.day.from_now.iso8601,
         'category'        => '#test',
-        'assignee'        => user.as_json(except: ['password', 'created_at', 'updated_at']),
-        'owner'           => owner.as_json(except: ['password', 'created_at', 'updated_at'])
+        'assignee'        => user.as_json(except: 
+                                ['email','password_digest', 'created_at', 'updated_at']
+                              ),
+        'owner'           => owner.as_json(except: 
+                                ['email','password_digest', 'created_at', 'updated_at']
+                              )
       }])
     end
    

@@ -1,0 +1,25 @@
+mutation AddTaskMutation(
+    $value: String!
+){
+    addTask(
+        value: $value
+    ){
+        task{
+            id
+            value
+            completed
+            category
+            overdue
+            assignee{
+                id
+                username
+                email
+            }
+            owner{
+                id
+                email
+                username
+            }
+        }
+    }
+}

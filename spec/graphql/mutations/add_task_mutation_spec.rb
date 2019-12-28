@@ -8,9 +8,9 @@ Rspec.describe Mutations::AddTaskMutation, type: :mutation do
     # avail type definer in our tests
     types = GraphQL::Define::TypeDefiner.instance
 
-    let!(:user) {create(:user, username: 'Martina')}
+    let!(:user) {create(:user, username: 'Martina', password: '123456')}
 
-    let!(:assignee) {create(:user, username: 'JD')}
+    let!(:assignee) {create(:user, username: 'JD', password: '123456')}
     let(:mutation_type) {"addTask"}
     let(:mutation_string){
         <<~GQL
