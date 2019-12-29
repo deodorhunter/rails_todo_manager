@@ -14,6 +14,7 @@ class GraphqlController < ApplicationController
       session: session,
       current_user: current_user
     }
+    debugger
     result = TodoManagerSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
   rescue => e
@@ -27,6 +28,7 @@ class GraphqlController < ApplicationController
   def current_user
     # debugger
     # if we want to change the sign-in strategy, this is the place to do it
+    # to logout simply delete context[:session]?
     return unless session[:token]
 
     crypt = ActiveSupport::MessageEncryptor.new(Rails.application.credentials.secret_key_base.byteslice(0..31))

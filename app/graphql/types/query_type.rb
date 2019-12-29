@@ -9,7 +9,7 @@ module Types
 
     field :me, Types::UserType, description: "Returns current logged user", null: true
     def me
-      debugger
+      # debugger
       context[:current_user]
     end
 

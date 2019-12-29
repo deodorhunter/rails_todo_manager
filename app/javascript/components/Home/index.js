@@ -16,8 +16,8 @@ export default () => (
                     {!data.me ?
                     <Redirect to="/login"/> 
                     : <div> 
-                        <UserInfo/>
-                        <AddTaskForm />
+                        <UserInfo currentUser={data.me}/>
+                        <AddTaskForm currentUser={data.me}/>
                         <Dashboard currentUser={data.me}/>   
                       </div>
                     }

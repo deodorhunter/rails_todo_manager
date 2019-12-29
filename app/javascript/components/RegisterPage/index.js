@@ -1,45 +1,42 @@
 import React, {useState} from 'react';
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react';
 import { Query, Mutation } from "react-apollo";
-import { Me, SignMeIn } from "./operations.graphql";
+// import { Me, SignMeIn } from "./operations.graphql";
 import {Link, useHistory} from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css'
 
 export default() => {
+    let history = useHistory();
     const [emailField, setEmailField] = useState('');
     const [passwordField, setPasswordField] = useState('');
-    let history = useHistory();
+    const [usernameField, setUsernameField] = useState('');
     return(
         <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
             <Header as='h2' color='teal' textAlign='center'>
-                <Image src={""} /> Log-in to your account
+                <Image src={""} /> Register
             </Header>
-            <Mutation
+            {/* <Mutation
                   mutation={SignMeIn}
-                  update={(cache, { data: { signIn } }) => {
-                    cache.writeQuery({
-                      query: Me,
-                      data: { me: signIn.user },
-                    });
-                  }}
-                  onCompleted={()=>history.push('/')}
+                  onCompleted={()=>(console.log('added user'))}
                 >
                   {(signIn, { loading: authenticating }) =>
                     authenticating ? (
                       '...'
-                    ) : (
+                    ) : ( */}
                     <Form size='large'
                         onSubmit={event => {
-                            debugger
+                            // still need to implement a mutation for creating users
                             console.log(emailField, passwordField)
                             const data = {
                                 'email': emailField,
+                                'username': usernameField,
                                 'password': passwordField
                             }
                             signIn({
                                 variables: { email: data },
-                                }).then(({ data: { signIn: { token } } }) => {
+                            }).then(({ data: { signIn: { token } } }) => {
+                               
                                 if (token) {
                                     console.log(token)
                                     localStorage.setItem('tdmToken', token);
@@ -54,6 +51,14 @@ export default() => {
                             placeholder='E-mail address'
                             value={emailField} 
                             onChange={ e => { setEmailField(e.target.value)}}
+                        />
+                        <Form.Input
+                            fluid
+                            icon='user'
+                            iconPosition='left'
+                            placeholder='Username'
+                            value={usernameField}
+                            onChange={ e => {setUsernameField(e.target.value)}}
                         />
                         <Form.Input
                             fluid
@@ -74,11 +79,8 @@ export default() => {
                         </Button>
                         </Segment>
                     </Form>
-                    )}
-                </Mutation>
-            <Message>
-                New to us? <Link to='/register'>Sign Up</Link>
-            </Message>
+                    {/* )} */}
+                {/* </Mutation> */}
             </Grid.Column>  
         </Grid>
     )

@@ -16,3 +16,9 @@ mutation SignMeIn($email: AuthProviderEmailInput){
     }
   }
 }
+
+mutation SignMeOut($token: String!){
+  signOut(token: $token){
+    success
+  }
+}

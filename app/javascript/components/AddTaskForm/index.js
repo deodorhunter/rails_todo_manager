@@ -1,10 +1,10 @@
 import React from "react";
 import { Mutation } from "react-apollo";
 import { AddTaskMutation } from "./operations.graphql";
-import { TasksQuery } from "../Dashboard/operations.graphql";
+import { AllTasksQuery } from "../Dashboard/operations.graphql";
 import ProcessTaskForm from "../ProcessTaskForm";
 
-const AddTaskForm = () => (
+const AddTaskForm = ({currentUser}) => (
   <Mutation mutation={AddTaskMutation}>
     {(addTask, { loading }) => (
       <ProcessTaskForm
@@ -16,13 +16,22 @@ const AddTaskForm = () => (
                     value
                 },
                 update: (cache, { data: { addTask } }) => {
+                    // debugger
                     const task = addTask.task;
                     if (task) {
-                        const currentTasks = cache.readQuery({ query: TasksQuery });
+                        const currentTasks = cache.readQuery({
+                          query: AllTasksQuery,
+                          variables: {
+                            'userId': currentUser.id
+                          }
+                         });
                         cache.writeQuery({
-                            query: TasksQuery,
+                            query: AllTasksQuery,
+                            variables: {
+                              'userId': currentUser.id
+                            },
                             data: {
-                                tasks: [task].concat(currentTasks.tasks),
+                                allUserTasks: [...currentTasks.allUserTasks, task]
                             },
                         });
                     }

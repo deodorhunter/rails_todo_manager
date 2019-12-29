@@ -6,7 +6,9 @@ module Queries
         argument :user_id, ID, required: true
 
         def resolve(user_id:)
-            Task.where(owner_id: user_id).or(Task.where(assignee_id: user_id))
+            Task.where(owner_id: user_id)
+                .or(Task.where(assignee_id: user_id))
+                .order(created_at: :desc)
         end
 
     end
