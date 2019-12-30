@@ -6,6 +6,7 @@ module Queries
 
         def resolve(owner_id:)
             Task.where(owner_id: owner_id)
+                .order(created_at: :desc)
         end
     end
 end

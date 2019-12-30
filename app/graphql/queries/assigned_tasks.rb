@@ -7,6 +7,7 @@ module Queries
 
         def resolve(assignee_id:)
             Task.where(assignee_id: assignee_id)
+                .order(created_at: :desc)
         end
 
     end
