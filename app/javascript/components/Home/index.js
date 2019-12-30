@@ -20,7 +20,7 @@ export default () => (
                     : <div> 
                         <Grid centered columns={2}>
                             <Grid.Row>
-                                <UserInfo currentUser={data.me}/>
+                                
                             </Grid.Row>
                             <Grid.Column width={3}>
                                 <Ref innerRef={ref}>
@@ -34,7 +34,7 @@ export default () => (
                             </Grid.Column>
                             <Grid.Column width={12}>
                                 {'below will go somewere else, above will be something else'}
-                                <AddTaskForm currentUser={data.me}/>
+                                
                                 <Dashboard currentUser={data.me}/>   
                             </Grid.Column>
                         </Grid>

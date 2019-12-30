@@ -3,6 +3,7 @@ import { Query, Mutation } from "react-apollo";
 import { useApolloClient } from "@apollo/react-hooks";
 import { Me, SignMeOut } from "./operations.graphql";
 import {useHistory} from 'react-router-dom';
+import {Image, Button, Icon} from 'semantic-ui-react';
 import cs from "./styles";
 
 const UserInfo = ({currentUser}) => {
@@ -14,31 +15,37 @@ const UserInfo = ({currentUser}) => {
       <Mutation
         mutation={SignMeOut}
         onCompleted={()=>{
-          client.resetStore();
+          client.clearStore();
           localStorage.clear();
-          history.push('/');
+          history.push('/login');
         }}
       >
           {(signOut) => (
-            <div className={cs.panel}>
-              <div className={cs.info}>😈 {username}</div>
-              <button onClick={() => {
-                const token = localStorage.getItem('tdmToken');
-                console.log('token', token)
-                signOut({
-                  variables: { token}
-                }).then(({ data: { signOut: { success } }}) => {
-                  if(success)
-                  {
-                    console.log('Logged out successfully');
-                  }
-                  else console.log('some error')  
-                })
-              }
-              }>
-                Log out
-              </button> 
-            </div>
+           
+            <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row', fontSize: '20px'}}>
+              {/* <div className={cs.info}> */}
+                  <Image avatar spaced='right' src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg'/>
+                  {username}
+              {/* </div> */}
+              <Button style={{marginLeft: '20px'}} size='big'
+                  labelPosition="right" 
+                  onClick={() => {
+                    const token = localStorage.getItem('tdmToken');
+                    console.log('token', token)
+                    signOut({
+                      variables: { token}
+                    }).then(({ data: { signOut: { success } }}) => {
+                      if(success)
+                      {
+                        console.log('Logged out successfully');
+                      }
+                      else console.log('some error')  
+                    })
+                  }}>
+              
+                    <Icon name='log out' size='big' />
+              </Button>
+              </div>
           )}
         </Mutation>
       

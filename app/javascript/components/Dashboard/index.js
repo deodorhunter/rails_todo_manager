@@ -1,11 +1,11 @@
 // app/javascript/components/Library/index.js
 import React, {useState} from 'react';
-import { Query } from 'react-apollo';
+import AddTaskForm from '../AddTaskForm';
 import {AllTasksQuery, OwnedTasksQuery, AssignedTasksQuery} from './operations.graphql';
-// import './style.css';
+import './style.css';
 import {Tab, Header, Menu, Segment, Container} from 'semantic-ui-react';
 import TaskTab from '../TaskTab';
-
+import UserInfo from '../UserInfo';
 
 export default ({currentUser}) => {
   const [activeTab, setActiveTab] = useState('all');
@@ -55,28 +55,43 @@ export default ({currentUser}) => {
   }
   return (
     <div>
-      <Menu pointing secondary size='massive'>
+      <Menu pointing secondary size='massive' inverted color={'teal'}
+          style={{alignItems: 'center'}}
+      >
         <Menu.Item
           name='all'
           active={activeTab === 'all'}
           onClick={(e, { name }) => setActiveTab(name)}
+          style={{fontSize: '24px'}}
+          // className='ui menu item'
         />
         <Menu.Item
           name='owned'
           active={activeTab === 'owned'}
           onClick={(e, { name }) => setActiveTab(name)}
+          style={{fontSize: '24px'}}
+          // className='ui menu item'
         />
         <Menu.Item
           name='assigned'
           active={activeTab === 'assigned'}
           onClick={(e, { name }) => setActiveTab(name)}
+          style={{fontSize: '24px'}}
+          // className='ui menu item'
         />
-        <Menu.Menu position='right'>
-          <Menu.Item
-            name='logout'
+        <Menu.Item style={{padding: '0px', margin: 'auto'}}>
+          <AddTaskForm currentUser={currentUser}  />
+        </Menu.Item>
+        <Menu.Menu position='right' style={{padding: '0px', alignItems: 'center'}}>
+          <Menu.Item style={{flex:0, padding: '0px'}}>
+            <UserInfo currentUser={currentUser}/>
+          </Menu.Item>
+            {/* name='logout'
             active={activeTab === 'logout'}
             onClick={(e, { name }) => setActiveTab(name)}
-          />
+            style={{fontSize: '24px'}}
+            // className='ui menu item'
+          /> */}
         </Menu.Menu>
       </Menu>
 

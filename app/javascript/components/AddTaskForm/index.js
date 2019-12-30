@@ -16,7 +16,7 @@ const AddTaskForm = ({currentUser}) => (
                     value
                 },
                 update: (cache, { data: { addTask } }) => {
-                    // debugger
+                    // debugger use fetchQueries to get all, owned and assigned refreshed
                     const task = addTask.task;
                     if (task) {
                         const currentTasks = cache.readQuery({
@@ -31,7 +31,7 @@ const AddTaskForm = ({currentUser}) => (
                               'userId': currentUser.id
                             },
                             data: {
-                                allUserTasks: [...currentTasks.allUserTasks, task]
+                                allUserTasks: [task, ...currentTasks.allUserTasks]
                             },
                         });
                     }
