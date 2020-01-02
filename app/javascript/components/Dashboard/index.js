@@ -6,53 +6,44 @@ import './style.css';
 import {Tab, Header, Menu, Segment, Container} from 'semantic-ui-react';
 import TaskTab from '../TaskTab';
 import UserInfo from '../UserInfo';
+import { Query } from 'react-apollo';
+import Subscription from '../Subscription';
 
 export default ({currentUser}) => {
   const [activeTab, setActiveTab] = useState('all');
-  
-  const renderSegment = () => {
-    let query = {};
-    let header = '';
-    if(activeTab === 'all'){
-      header = 'All';
-      query = {
-        key: 'allUserTasks',
-        query: AllTasksQuery,
-        variables:{
-          'userId': currentUser.id
-        }
-      }
+  const createContextData = (data) => {
+    switch (activeTab) {
+      case 'all':
+        return data['allUserTasks']
+        
+      case 'owned':
+        // console.log(data['allUserTasks'], data['allUserTasks'].filter( el => el.owner.id === currentUser.id) )
+        return data['allUserTasks'].filter( el => {
+          if(el.hasOwnProperty('owner') && el.owner) 
+            return el.owner.id === currentUser.id
+        })
+        
+      case 'assigned':
+        return data['allUserTasks'].filter( el => {
+          if(el.hasOwnProperty('assignee') && el.assignee)
+           return el.assignee.id === currentUser.id
+        })
+      
+      default:
+        break;
     }
-    else if(activeTab === 'owned'){
-      header = 'Added by you';
-      query = {
-        key: 'ownedTasks',
-        query: OwnedTasksQuery,
-        variables:{
-          'ownerId': currentUser.id
-        }
-      }
-    }
-    else if(activeTab === 'assigned'){
-      header = 'Assigned to you';
-      query = {
-        key: 'assignedTasks',
-        query: AssignedTasksQuery,
-        variables:{
-          'assigneeId': currentUser.id
-        }
-      }
-    }
-    return(
+  }
+  const renderSegment = (contextData, loading) => (
       <div>
-        <Header as='h1'>{header}</Header>
-          <TaskTab query={query}
+        {/* <Header as='h1'>{header}</Header> */}
+          <TaskTab data={contextData}
             currentUser={currentUser}
+            loading={loading}
           />
       </div>
     // </Tab.Pane>
-    )
-  }
+  )
+  
   return (
     <div>
       <Menu pointing secondary size='massive' inverted color={'teal'}
@@ -96,7 +87,20 @@ export default ({currentUser}) => {
       </Menu>
 
       <div>
-          {renderSegment()}
+        <Query query={AllTasksQuery} variables={{'userId': currentUser.id}}>
+          {({ data, loading, subscribeToMore }) => {
+            console.log(data, loading)
+            const contextData = data && !loading ? createContextData(data) : null;
+            return(
+              <div>
+                  {contextData ? renderSegment(contextData, loading) : ''}
+                  <Subscription subscribeToMore={subscribeToMore}/>
+              </div>
+            )
+          }}
+        
+        </Query>
+         
       </div>
     </div>
     // <Tab panes={panes} />

@@ -13,7 +13,7 @@ module Mutations
         return unless email
 
         user = User.find_by!(email: email[:email])
-
+        
         # ensures we have the correct user
         return unless user
         return unless user.authenticate(email[:password])

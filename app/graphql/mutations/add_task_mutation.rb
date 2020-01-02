@@ -25,6 +25,7 @@ module Mutations
         )
 
         if task.save
+          TodoManagerSchema.subscriptions.trigger("taskAdded", {}, task)
           { task: task }
         else
           { errors: task.errors.full_messages }

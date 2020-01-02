@@ -9,6 +9,7 @@ import cs from "./styles";
 const UserInfo = ({currentUser}) => {
     let history = useHistory();
     const client = useApolloClient();
+    console.log(client);
     const { username } = currentUser;
     console.log(localStorage.getItem('tdmToken'))
     return (

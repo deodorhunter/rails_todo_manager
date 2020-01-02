@@ -8,7 +8,7 @@ const ProcessTaskForm = ({
   loading
 }) => {
   const [value, setValue] = useState(initialValue);
-  const processForm = ({value}) => {
+  const processForm = () => {
       onProcessItem(value)
       setValue('')
   }
