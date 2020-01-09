@@ -82,6 +82,10 @@ GEM
       railties
       sprockets-rails
     graphql (1.9.17)
+    hairtrigger (0.2.23)
+      activerecord (>= 5.0, < 7)
+      ruby2ruby (~> 2.4)
+      ruby_parser (~> 3.10)
     i18n (1.7.0)
       concurrent-ruby (~> 1.0)
     jbuilder (2.9.1)
@@ -164,7 +168,12 @@ GEM
       rspec-support (~> 3.9.0)
     rspec-support (3.9.0)
     ruby-progressbar (1.10.1)
+    ruby2ruby (2.4.4)
+      ruby_parser (~> 3.1)
+      sexp_processor (~> 4.6)
     ruby_dep (1.5.0)
+    ruby_parser (3.14.1)
+      sexp_processor (~> 4.9)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.2.1)
@@ -175,6 +184,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    sexp_processor (4.13.0)
     shoulda-matchers (4.1.2)
       activesupport (>= 4.2.0)
     sprockets (4.0.0)
@@ -215,6 +225,7 @@ DEPENDENCIES
   fuubar
   graphiql-rails
   graphql (~> 1.9)
+  hairtrigger
   jbuilder (~> 2.7)
   listen (>= 3.0.5, < 3.2)
   pg (>= 0.18, < 2.0)

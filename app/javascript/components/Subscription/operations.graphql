@@ -2,6 +2,23 @@ subscription TaskSubscription {
   taskAdded {
     overdue
     category
+    completed
+    value
+    id
+    assignee{
+        id
+        username
+    }
+    owner {
+      id
+      username
+    }
+  }
+  
+  taskCompleted {
+    overdue
+    category
+    completed
     value
     id
     assignee{

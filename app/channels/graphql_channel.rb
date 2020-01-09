@@ -8,15 +8,16 @@ class GraphqlChannel < ApplicationCable::Channel
 
   # Things to do when subscribing or calling subscription
   def execute(data)
+    logger.debug "[GraphqlChannel] about to execute query "
     result = execute_query(data)
-    debugger
     payload = {
       result: result.subscription? ? { data: nil } : result.to_h,
       more: result.subscription?
     }
     # similar to js .concat(), add if sub_id is present in result context
     @subscription_ids << context[:subscription_id] if result.context[:subscription_id]
-
+    logger.debug "[GraphqlChannel] subscription_ids are #{@subscription_ids}"
+    logger.debug "[GraphqlChannel] about to transmit payload #{payload}"
     transmit(payload)
   end
 
@@ -30,6 +31,7 @@ class GraphqlChannel < ApplicationCable::Channel
   private
 
   def execute_query(data)
+    logger.debug "[GraphqlChannel] executing query with query: #{data["query"]}, variables: #{data["variables"]}, operation name: #{data['operationName']}"
     TodoManagerSchema.execute(
       query: data["query"],
       context: context,

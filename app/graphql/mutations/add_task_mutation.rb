@@ -21,7 +21,8 @@ module Mutations
           assignee: parsed_results[:assignee],
           category: parsed_results[:category],
           overdue: parsed_results[:overdue],
-          owner: context[:current_user]
+          owner: context[:current_user],
+          completed: false
         )
 
         if task.save

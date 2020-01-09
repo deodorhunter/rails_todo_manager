@@ -54,3 +54,5 @@ end
 gem "graphql", "~> 1.9"
 
 gem 'graphiql-rails', group: :development
+
+gem 'hairtrigger'

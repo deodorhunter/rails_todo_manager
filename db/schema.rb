@@ -27,7 +27,9 @@ ActiveRecord::Schema.define(version: 2019_12_24_164546) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["assignee_id"], name: "index_tasks_on_assignee_id"
+    t.index ["category", "completed"], name: "index_tasks_on_category_and_completed"
     t.index ["category"], name: "index_tasks_on_category", using: :gin
+    t.index ["completed"], name: "index_tasks_on_completed"
     t.index ["owner_id"], name: "index_tasks_on_owner_id"
   end
 

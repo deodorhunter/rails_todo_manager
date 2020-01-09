@@ -1,0 +1,25 @@
+mutation CompleteTaskMutation(
+    $completed: Boolean!,
+    $id: ID!
+){
+    completeTask(
+        completed: $completed,
+        id: $id
+    ){
+        task{
+            id
+            value
+            completed
+            category
+            overdue
+            assignee{
+                id
+                username
+            }
+            owner{
+                id
+                username
+            }
+        }
+    }
+}

@@ -4,6 +4,7 @@ module ApplicationCable
 
     def connect
       self.current_user = current_user
+      logger.debug "Current user using connection is: #{current_user}"
     end
 
     private

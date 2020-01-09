@@ -4,15 +4,14 @@ query AllTasksQuery($userId: ID!)
         id
         value
         category
+        completed
         assignee{
             id
-            email
             username
         }
         overdue
         owner {
             id
-            email
             username
         }
     }

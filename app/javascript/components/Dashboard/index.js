@@ -1,29 +1,31 @@
 // app/javascript/components/Library/index.js
-import React, {useState} from 'react';
+import React, {useState, createRef} from 'react';
 import AddTaskForm from '../AddTaskForm';
-import {AllTasksQuery, OwnedTasksQuery, AssignedTasksQuery} from './operations.graphql';
-import './style.css';
-import {Tab, Header, Menu, Segment, Container} from 'semantic-ui-react';
+import {AllTasksQuery} from './operations.graphql';
+import {Grid, Ref, Menu, Rail, Sticky, Image, Header} from 'semantic-ui-react';
 import TaskTab from '../TaskTab';
 import UserInfo from '../UserInfo';
 import { Query } from 'react-apollo';
 import Subscription from '../Subscription';
+import StatsRail from '../StatsRail';
+
 
 export default ({currentUser}) => {
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('ALL');
+  const ref = createRef();
   const createContextData = (data) => {
     switch (activeTab) {
-      case 'all':
+      case 'ALL':
         return data['allUserTasks']
         
-      case 'owned':
+      case 'OWNED':
         // console.log(data['allUserTasks'], data['allUserTasks'].filter( el => el.owner.id === currentUser.id) )
         return data['allUserTasks'].filter( el => {
           if(el.hasOwnProperty('owner') && el.owner) 
             return el.owner.id === currentUser.id
         })
         
-      case 'assigned':
+      case 'ASSIGNED':
         return data['allUserTasks'].filter( el => {
           if(el.hasOwnProperty('assignee') && el.assignee)
            return el.assignee.id === currentUser.id
@@ -50,24 +52,24 @@ export default ({currentUser}) => {
           style={{alignItems: 'center'}}
       >
         <Menu.Item
-          name='all'
-          active={activeTab === 'all'}
+          name='ALL'
+          active={activeTab === 'ALL'}
           onClick={(e, { name }) => setActiveTab(name)}
-          style={{fontSize: '24px'}}
+          style={{fontSize: '20px'}}
           // className='ui menu item'
         />
         <Menu.Item
-          name='owned'
-          active={activeTab === 'owned'}
+          name='OWNED'
+          active={activeTab === 'OWNED'}
           onClick={(e, { name }) => setActiveTab(name)}
-          style={{fontSize: '24px'}}
+          style={{fontSize: '20px'}}
           // className='ui menu item'
         />
         <Menu.Item
-          name='assigned'
-          active={activeTab === 'assigned'}
+          name='ASSIGNED'
+          active={activeTab === 'ASSIGNED'}
           onClick={(e, { name }) => setActiveTab(name)}
-          style={{fontSize: '24px'}}
+          style={{fontSize: '20px'}}
           // className='ui menu item'
         />
         <Menu.Item style={{padding: '0px', margin: 'auto'}}>
@@ -93,8 +95,28 @@ export default ({currentUser}) => {
             const contextData = data && !loading ? createContextData(data) : null;
             return(
               <div>
-                  {contextData ? renderSegment(contextData, loading) : ''}
-                  <Subscription subscribeToMore={subscribeToMore}/>
+                <Grid textAlign='left' columns={3} centered>
+                  <Grid.Column style={{padding: '0px'}} className='container' 
+                    width={9}>
+                    <Ref innerRef={ref}>
+                      <Rail dividing position='left' style={{width: '340px', padding: '0px', marginLeft: '35px', display: 'flex'}}>
+                          <Sticky context={ref} style={{flex: 1}}>
+                          <StatsRail currentUser={currentUser}/>
+                          </Sticky>
+                      </Rail>
+                    </Ref>
+                    {contextData ? renderSegment(contextData, loading) : ''}
+                    <Subscription subscribeToMore={subscribeToMore}/>
+                    <Ref innerRef={ref}>
+                      <Rail position='right' style={{width: '340px', padding: '0px', marginLeft: '35px', marginRight: '35px', display: 'flex'}} >
+                          <Sticky context={ref}>
+                          <Header as='h3'>This will be home of task detail (and timer start? what does distraction free view mean?)</Header>
+                          <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
+                          </Sticky>
+                      </Rail>
+                      </Ref>
+                  </Grid.Column>
+                </Grid>  
               </div>
             )
           }}

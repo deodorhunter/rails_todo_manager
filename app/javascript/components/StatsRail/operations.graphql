@@ -1,0 +1,13 @@
+query UserStatistics($userId: ID!){
+    statistics(userId: $userId){
+        categories{
+        category
+        categoryTotal
+            categoryCompleted
+            percentage
+        }
+        completedCount
+        totalCount
+    
+  }
+}
