@@ -5,8 +5,8 @@ module Queries
         argument :owner_id, ID, required: true
 
         def resolve(owner_id:)
-            Task.where(owner_id: owner_id)
-                .order(created_at: :desc)
+            user = User.find(owner_id)
+            all_tasks = user.tasks.to_a
         end
     end
 end

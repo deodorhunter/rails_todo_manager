@@ -6,6 +6,10 @@ class User < ApplicationRecord
 
     before_save { self.email = email.downcase }
 
+    has_many :assignments, inverse_of: :task
+    has_many :assigned_tasks, :through => :assignments, :foreign_key => 'task_id', :source => :task, dependent: :destroy
+    # , :class_name => 'Task', :foreign_key => 'assignee_id'
+   
     has_many :tasks, :class_name => 'Task', :foreign_key => 'owner_id', dependent: :destroy
 
     validates :email, presence: true, uniqueness: true

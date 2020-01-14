@@ -4,6 +4,7 @@ FactoryBot.define do
       value {'Capire Ruby !10giorni @user2 #rubyonrails'}
       category {'rubyonrails'}
       association :owner, factory: :user
-      association :assignee, factory: :user
+      association :assignees, factory: :user
+      after(:create){ |task| task.assignees << FactoryBot.create(:user)}
     end
 end

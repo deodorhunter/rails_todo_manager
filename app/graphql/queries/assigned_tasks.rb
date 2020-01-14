@@ -6,8 +6,8 @@ module Queries
         argument :assignee_id, ID, required: true
 
         def resolve(assignee_id:)
-            Task.where(assignee_id: assignee_id)
-                .order(created_at: :desc)
+            user = User.find(assignee_id)
+            all_tasks = user.assigned_tasks.to_a
         end
 
     end

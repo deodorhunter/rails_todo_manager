@@ -5,7 +5,7 @@ query AllTasksQuery($userId: ID!)
         value
         category
         completed
-        assignee{
+        assignees{
             id
             username
         }
@@ -23,15 +23,13 @@ query OwnedTasksQuery($ownerId: ID!)
         id
         value
         category
-        assignee{
+        assignees{
             id
-            email
             username
         }
         overdue
         owner {
             id
-            email
             username
         }
     }
@@ -43,15 +41,13 @@ query AssignedTasksQuery($assigneeId: ID!)
         id
         value
         category
-        assignee{
+        assignees{
             id
-            email
             username
         }
         overdue
         owner {
             id
-            email
             username
         }
     }

@@ -4,15 +4,61 @@ import { Query } from 'react-apollo';
 import './style.css';
 import {Image, List, Grid, Label, Icon, Button, Header, Placeholder, Rail, Sticky, Ref, Divider} from 'semantic-ui-react';
 import ListItem from '../ListItem';
+import Subscription from '../Subscription';
 
 
 
-export default ({data, loading, currentUser}) => {
+export default ({data, loading, currentUser, query}) => {
     const ref = createRef();
     console.log(data, loading);
     return(
         <div style={{marginTop: '10px'}}>
-          
+          <Query query={query.query} variables={query.variables}>
+            {({data, loading, subscribeToMore}) => {
+              console.log(data, loading)
+              return(
+                <List relaxed size={'massive'}>
+                  {!data
+                    ? (
+                        // <Segment loading>
+                            <Placeholder>
+                                <Placeholder.Header image>
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                </Placeholder.Header>
+                            </Placeholder>
+                        // </Segment>
+                    )
+                    : data.map((
+                      { value, id, owner, overdue, assignees, completed, category }, index) => {
+                        // TODO: sistemare
+                        // if(assignees){
+                        //   if(assignees.some(ass => ass.id === currentUser.id))
+                        //     assignee.username='You'
+                        // }
+                        return(
+                          <div key={id}>
+                            <ListItem 
+                              // assignee={assignee} 
+                              owner={owner} 
+                              overdue={overdue}
+                              value={value} 
+                              completed={completed} 
+                              category={category}
+                              id={id}
+                              currentUser={currentUser}
+                              context={query}
+                            />
+                            <Divider hidden style={{margin: '8px'}}/>     
+                          </div>       
+                      )}  
+                    )}
+                </List>
+                <Subscription subscribeToMore={subscribeToMore}/>
+              )
+            }}
+            
+          </Query>
           {/* <Grid textAlign='left' columns={3} centered> */}
             {/* <Grid.Column> */}
               
@@ -28,41 +74,7 @@ export default ({data, loading, currentUser}) => {
                     {/* </Sticky> */}
                 {/* </Rail> */}
               {/* </Ref> */}
-              <List relaxed size={'massive'}>
-                  {!data
-                    ? (
-                        // <Segment loading>
-                            <Placeholder>
-                                <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                                </Placeholder.Header>
-                            </Placeholder>
-                        // </Segment>
-                    )
-                    : data.map((
-                      { value, id, owner, overdue, assignee, completed, category }, index) => {
-                        if(assignee){
-                          if(assignee.id === currentUser.id)
-                            assignee.username='You'
-                        }
-                        return(
-                          <div key={id}>
-                            <ListItem 
-                              assignee={assignee} 
-                              owner={owner} 
-                              overdue={overdue}
-                              value={value} 
-                              completed={completed} 
-                              category={category}
-                              id={id}
-                              currentUser={currentUser}
-                            />
-                            <Divider hidden style={{margin: '8px'}}/>     
-                          </div>       
-                      )}  
-                    )}
-              </List>
+              
             {/* </Grid.Column> */}
             {/* <Grid.Column> */}
                 {/* <Ref innerRef={ref}>

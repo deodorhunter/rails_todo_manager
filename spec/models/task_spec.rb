@@ -6,18 +6,24 @@ require "task"
 RSpec.describe Task do
 
     # add fixture/factory
+    let(:assignee){
+        create(:user)
+   }
+    let(:owner){
+         create(:user)
+    }
     let(:task){
-        owner = create(:user)
-        assignee = create(:user)
-        create(:task, owner: owner, assignee: assignee)
+        create(:task, owner: owner)
     }
     
     
     it 'should have an owner' do
         should belong_to(:owner)
     end
-    it 'can have an assignee assignee' do
-        should belong_to(:assignee).optional
+    it 'can have an assignee' do
+        # task.assignees = [assignee]
+        puts task
+        should have_many(:assignees).through(:assignments).optional
     end
     # describe 'email is present' do
     it 'task value must be present' do

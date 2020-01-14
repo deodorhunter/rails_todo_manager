@@ -6,7 +6,7 @@ import CompleteTaskMutation from './operations.graphql';
 import PropTypes from 'prop-types';
 
 
-const ListItem = ({assignee, value, category, completed, overdue, owner, id, currentUser}) => (
+const ListItem = ({assignee, context, value, category, completed, overdue, owner, id, currentUser}) => (
     <Mutation mutation={CompleteTaskMutation}>
         {(completeTask, {loading}) => {
             // console.log(id, completed)
@@ -19,22 +19,20 @@ const ListItem = ({assignee, value, category, completed, overdue, owner, id, cur
                     update: (cache, { data: { completeTask } }) => {
                         const task = completeTask.task;
                         if (task) {
-                            const currentTasks = cache.readQuery({
-                            query: AllTasksQuery,
-                            variables: {
-                                'userId': currentUser.id
-                            }
+                            const contextTasks = cache.readQuery({
+                                query: context.query,
+                                variables: context.variables
                             });
 
-                            currentTasks.allUserTasks[currentTasks.allUserTasks.findIndex( el => el.id === task.id)] = task;
-                            console.log(currentTasks.allUserTasks);
+                            contextTasks.allUserTasks[contextTasks.allUserTasks.findIndex( el => el.id === task.id)] = task;
+                            console.log(contextTasks.allUserTasks);
                             cache.writeQuery({
                                 query: AllTasksQuery,
                                 variables: {
                                 'userId': currentUser.id
                                 },
                                 data: {
-                                    allUserTasks: currentTasks.allUserTasks
+                                    allUserTasks: contextTasks.allUserTasks
                                 },
                             });
                         }
@@ -93,7 +91,8 @@ const ListItem = ({assignee, value, category, completed, overdue, owner, id, cur
                                 {assignee ? 
                                 <Label image className='metatag'>
                                     <img src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
-                                    @{assignee.username}
+                                    {/* TODO: fix this */}
+                                    {/* @{assignee.username} */}
                                 </Label>
                                 : ''}
                             {/* </span> */}

@@ -10,12 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_24_164546) do
+ActiveRecord::Schema.define(version: 2020_01_09_170607) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "assignments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "task_id"
+    t.uuid "user_id"
+    t.index ["task_id"], name: "index_assignments_on_task_id"
+    t.index ["user_id"], name: "index_assignments_on_user_id"
+  end
 
   create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "owner_id", null: false
@@ -23,10 +30,8 @@ ActiveRecord::Schema.define(version: 2019_12_24_164546) do
     t.boolean "completed", default: false
     t.string "category"
     t.datetime "overdue"
-    t.uuid "assignee_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["assignee_id"], name: "index_tasks_on_assignee_id"
     t.index ["category", "completed"], name: "index_tasks_on_category_and_completed"
     t.index ["category"], name: "index_tasks_on_category", using: :gin
     t.index ["completed"], name: "index_tasks_on_completed"

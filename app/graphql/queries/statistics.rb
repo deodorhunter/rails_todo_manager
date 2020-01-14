@@ -8,22 +8,25 @@ module Queries
         def resolve(user_id:)
             connection = ActiveRecord::Base.connection.raw_connection
             test_sql = <<~SQL
-                EXPLAIN ANALYZE with part1 as(
+                EXPLAIN ANALYZE  with part1 as(
                     select
                         temp.category,
                         count(temp.category) over (partition by temp.category) as category_total,
                         count(case when temp.completed = true then temp.category else null end) over (partition by temp.category) as category_completed
-                    
-                    from (select  category, completed, owner_id, assignee_id from tasks )as temp
-                    where owner_id = $1 or assignee_id = $2
+                
+                    from (
+                        select  t.category, t.completed, t.owner_id, a.user_id 
+                        from tasks as t join assignments as a on a.task_id = t.id
+                    )as temp
+                    where temp.owner_id = '312254c8-a644-49e8-a40e-a777987bcdc1' or temp.user_id = '312254c8-a644-49e8-a40e-a777987bcdc1'
                 ),
                 totals as( 
                     select
                         distinct category, category_total, category_completed
-                        
+                
                     from part1
                 )
-                    
+                
                 select
                     category,
                     category_total, category_completed,
@@ -38,9 +41,12 @@ module Queries
                         temp.category,
                         count(temp.category) over (partition by temp.category) as category_total,
                         count(case when temp.completed = true then temp.category else null end) over (partition by temp.category) as category_completed
-                    
-                    from (select  category, completed, owner_id, assignee_id from tasks )as temp
-                    where owner_id = $1 or assignee_id = $2
+                
+                    from (
+                        select  t.category, t.completed, t.owner_id, a.user_id 
+                        from tasks as t join assignments as a on a.task_id = t.id
+                    )as temp
+                    where temp.owner_id = $1 or temp.user_id = $2
                 ),
                 totals as( 
                     select

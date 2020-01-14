@@ -1,7 +1,7 @@
 // app/javascript/components/Library/index.js
 import React, {useState, createRef} from 'react';
 import AddTaskForm from '../AddTaskForm';
-import {AllTasksQuery} from './operations.graphql';
+import {AllTasksQuery, OwnedTasksQuery, AssignedTasksQuery} from './operations.graphql';
 import {Grid, Ref, Menu, Rail, Sticky, Image, Header} from 'semantic-ui-react';
 import TaskTab from '../TaskTab';
 import UserInfo from '../UserInfo';
@@ -13,38 +13,73 @@ import StatsRail from '../StatsRail';
 export default ({currentUser}) => {
   const [activeTab, setActiveTab] = useState('ALL');
   const ref = createRef();
-  const createContextData = (data) => {
-    switch (activeTab) {
-      case 'ALL':
-        return data['allUserTasks']
+  // const createContextData = (data) => {
+  //   switch (activeTab) {
+  //     case 'ALL':
+  //       return data['allUserTasks']
         
-      case 'OWNED':
-        // console.log(data['allUserTasks'], data['allUserTasks'].filter( el => el.owner.id === currentUser.id) )
-        return data['allUserTasks'].filter( el => {
-          if(el.hasOwnProperty('owner') && el.owner) 
-            return el.owner.id === currentUser.id
-        })
+  //     case 'OWNED':
+  //       // console.log(data['allUserTasks'], data['allUserTasks'].filter( el => el.owner.id === currentUser.id) )
+  //       return data['allUserTasks'].filter( el => {
+  //         if(el.hasOwnProperty('owner') && el.owner) 
+  //           return el.owner.id === currentUser.id
+  //       })
         
-      case 'ASSIGNED':
-        return data['allUserTasks'].filter( el => {
-          if(el.hasOwnProperty('assignee') && el.assignee)
-           return el.assignee.id === currentUser.id
-        })
+  //     case 'ASSIGNED':
+  //       return data['allUserTasks'].filter( el => {
+  //         if(el.hasOwnProperty('assignee') && el.assignee)
+  //          return el.assignee.id === currentUser.id
+  //       })
       
-      default:
+  //     default:
+  //       break;
+  //   }
+  // }
+  const renderSegment = () => {
+    let queryObj = {}
+    switch(activeTab){
+      case 'ALL':
+        queryObj = {
+          ...queryObj,
+          'query': AllTasksQuery,
+          'variables': {
+            'userId': currentUser.id
+          }
+        }
         break;
+      case 'OWNED':
+        queryObj = {
+          ...queryObj,
+          'query': OwnedTasksQuery,
+          'variables': {
+            'ownerId': currentUser.id
+          }
+        }
+        break;
+      case 'ALL':
+        queryObj = {
+          ...queryObj,
+          'query': AssignedTasksQuery,
+          'variables': {
+            'assigneeId': currentUser.id
+          }
+        }
+        break;
+        
     }
-  }
-  const renderSegment = (contextData, loading) => (
+    return (
       <div>
         {/* <Header as='h1'>{header}</Header> */}
-          <TaskTab data={contextData}
+          <TaskTab
+          //  data={contextData}
             currentUser={currentUser}
-            loading={loading}
+            // loading={loading}
+            query={queryObj}
           />
       </div>
     // </Tab.Pane>
-  )
+    )
+  }
   
   return (
     <div>
@@ -89,12 +124,12 @@ export default ({currentUser}) => {
       </Menu>
 
       <div>
-        <Query query={AllTasksQuery} variables={{'userId': currentUser.id}}>
-          {({ data, loading, subscribeToMore }) => {
-            console.log(data, loading)
-            const contextData = data && !loading ? createContextData(data) : null;
-            return(
-              <div>
+        {/* <Query query={AllTasksQuery} variables={{'userId': currentUser.id}}> */}
+          {/* {({ data, loading, subscribeToMore }) => { */}
+            {/* console.log(data, loading) */}
+            {/* const contextData = data && !loading ? createContextData(data) : null; */}
+            {/* return( */}
+              {/* <div> */}
                 <Grid textAlign='left' columns={3} centered>
                   <Grid.Column style={{padding: '0px'}} className='container' 
                     width={9}>
@@ -105,7 +140,7 @@ export default ({currentUser}) => {
                           </Sticky>
                       </Rail>
                     </Ref>
-                    {contextData ? renderSegment(contextData, loading) : ''}
+                    {currentUser ? renderSegment() : ''}
                     <Subscription subscribeToMore={subscribeToMore}/>
                     <Ref innerRef={ref}>
                       <Rail position='right' style={{width: '340px', padding: '0px', marginLeft: '35px', marginRight: '35px', display: 'flex'}} >
@@ -117,11 +152,11 @@ export default ({currentUser}) => {
                       </Ref>
                   </Grid.Column>
                 </Grid>  
-              </div>
-            )
-          }}
+              {/* </div> */}
+            {/* ) */}
+          {/* }} */}
         
-        </Query>
+        {/* </Query> */}
          
       </div>
     </div>

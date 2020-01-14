@@ -26,15 +26,15 @@ class TextParser
 
     def self.parse(text:)
         parsed_results = {
-            :category      => nil,
-            :assignee      => nil,
-            :overdue       => nil
+            :category       => nil,
+            :assignees      => [],
+            :overdue        => nil
         }
 
         splitted = text.split(/\s/)
         splitted.each do |token|
             if token.match?(/@/)
-                parsed_results[:assignee] = self.assign(token)
+                parsed_results[:assignees] << self.assign(token)
             elsif token.match?(/!/)
                 parsed_results[:overdue] = self.date_builder(token: token)
             elsif token.match?(/#/)

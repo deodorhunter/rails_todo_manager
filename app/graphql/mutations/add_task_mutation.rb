@@ -18,7 +18,7 @@ module Mutations
 
         task = Task.new(
           value: value,
-          assignee: parsed_results[:assignee],
+          # assignee: parsed_results[:assignee],
           category: parsed_results[:category],
           overdue: parsed_results[:overdue],
           owner: context[:current_user],
@@ -26,8 +26,14 @@ module Mutations
         )
 
         if task.save
-          TodoManagerSchema.subscriptions.trigger("taskAdded", {}, task)
-          { task: task }
+          task.assignees = parsed_results[:assignees]
+          if task.save
+            TodoManagerSchema.subscriptions.trigger("taskAdded", {}, task)
+            { task: task }
+          else
+            { errors: task.errors.full_messages }
+          end
+
         else
           { errors: task.errors.full_messages }
         end

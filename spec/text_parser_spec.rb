@@ -53,8 +53,8 @@ RSpec.describe TextParser do
             expect(category).to eq('test')
         end
         it "parses assignee correctly" do
-            assignee = TextParser.parse(text: text)[:assignee]
-            test_assignee = User.find_by(username: @test_user.username)
+            assignee = TextParser.parse(text: text)[:assignees]
+            test_assignee = [User.find_by(username: @test_user.username)]
             expect(assignee).to eq(test_assignee)
         end
         it "parses overdue correctly" do
@@ -65,9 +65,9 @@ RSpec.describe TextParser do
         it "returns whole results correctly" do
             results = TextParser.parse(text: text)
             test_results = {
-                :category   => 'test',
-                :assignee   => User.find_by(username: @test_user.username),
-                :overdue    => Date.tomorrow
+                :category    => 'test',
+                :assignees   => [User.find_by(username: @test_user.username)],
+                :overdue     => Date.tomorrow
             }
             expect(results).to eq(test_results)
         end
