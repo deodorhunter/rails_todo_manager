@@ -73,12 +73,10 @@ module Queries
             debugger
             puts test_query.inspect
             result = connection.exec_prepared('stats', [user_id, user_id])
+            user = User.find(user_id)
             # connection.close()
-            completed_count = Task.where(
-                "completed = ? AND  ( owner_id = ? OR assignee_id = ? )" ,
-                true,  user_id, user_id)
-                .count()
-            total_count = Task.where("owner_id = ? OR assignee_id = ?", user_id, user_id).count()
+            total_count = user.tasks.count() + user.assigned_tasks.count()
+            completed_count = user.tasks.where(completed: true).count() + user.assigned_tasks.where(completed: true).count()
             
             
             data = {

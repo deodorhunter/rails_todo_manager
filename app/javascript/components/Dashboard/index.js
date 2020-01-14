@@ -141,7 +141,7 @@ export default ({currentUser}) => {
                       </Rail>
                     </Ref>
                     {currentUser ? renderSegment() : ''}
-                    <Subscription subscribeToMore={subscribeToMore}/>
+                    {/* <Subscription subscribeToMore={subscribeToMore}/> */}
                     <Ref innerRef={ref}>
                       <Rail position='right' style={{width: '340px', padding: '0px', marginLeft: '35px', marginRight: '35px', display: 'flex'}} >
                           <Sticky context={ref}>

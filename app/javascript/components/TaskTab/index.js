@@ -17,6 +17,7 @@ export default ({data, loading, currentUser, query}) => {
             {({data, loading, subscribeToMore}) => {
               console.log(data, loading)
               return(
+                <div>
                 <List relaxed size={'massive'}>
                   {!data
                     ? (
@@ -55,6 +56,7 @@ export default ({data, loading, currentUser, query}) => {
                     )}
                 </List>
                 <Subscription subscribeToMore={subscribeToMore}/>
+                </div>
               )
             }}
             
