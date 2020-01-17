@@ -18,21 +18,22 @@ const AddTaskForm = ({currentUser}) => (
                 update: (cache, { data: { addTask } }) => {
                     const task = addTask.task;
                     if (task) {
-                        const currentTasks = cache.readQuery({
-                          query: AllTasksQuery,
-                          variables: {
-                            'userId': currentUser.id
-                          }
-                         });
-                        cache.writeQuery({
-                            query: AllTasksQuery,
-                            variables: {
-                              'userId': currentUser.id
-                            },
-                            data: {
-                                allUserTasks: [task, ...currentTasks.allUserTasks]
-                            },
-                        });
+                      console.log(cache)
+                      // const currentTasks = cache.readQuery({
+                      //   query: AllTasksQuery,
+                      //   variables: {
+                      //     'userId': currentUser.id
+                      //   }
+                      //  });
+                      // cache.writeQuery({
+                      //     query: AllTasksQuery,
+                      //     variables: {
+                      //       'userId': currentUser.id
+                      //     },
+                      //     data: {
+                      //         allUserTasks: [task, ...currentTasks.allUserTasks]
+                      //     },
+                      // });
                     }
                 },
             })

@@ -12,7 +12,7 @@ mutation CompleteTaskMutation(
             completed
             category
             overdue
-            assignee{
+            assignees{
                 id
                 username
             }

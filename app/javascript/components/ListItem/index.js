@@ -6,11 +6,23 @@ import CompleteTaskMutation from './operations.graphql';
 import PropTypes from 'prop-types';
 
 
-const ListItem = ({assignee, context, value, category, completed, overdue, owner, id, currentUser}) => (
+const ListItem = ({
+    assignees,
+    context, 
+    value, 
+    category, 
+    completed, 
+    overdue, 
+    owner, 
+    id, 
+    currentUser
+}) => 
+(
     <Mutation mutation={CompleteTaskMutation}>
         {(completeTask, {loading}) => {
             // console.log(id, completed)
             const completeOnClick = (id) => {
+                debugger
                 completeTask({
                     variables: {
                         id,
@@ -41,7 +53,9 @@ const ListItem = ({assignee, context, value, category, completed, overdue, owner
             }
             const renderOptionsGroup = () => {
                 if(!completed){
-                    if((owner.id === currentUser.id && !assignee) || (owner.id !== currentUser.id && assignee.id === currentUser.id))
+                    if((owner.id === currentUser.id && assignees.length === 0) 
+                        || (owner.id !== currentUser.id && 
+                            assignees.some(ass => ass.id === currentUser.id)))
                         return(
                             <Button positive floated='right'
                                 content='Done' 
@@ -53,9 +67,18 @@ const ListItem = ({assignee, context, value, category, completed, overdue, owner
                 }
                 else return null
             }
-
+            const renderAssignees = () =>{
+                const you = assignees.findIndex(ass => ass.id === currentUser.id)
+                return assignees.map( (ass, index) => (
+                    <Label image className='metatag' key={index}>
+                        <img src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
+                        {/* TODO: fix this */}
+                        @{index === you ? 'You' : ass.username}
+                    </Label>
+                ))
+            }
             return(
-                <List.Item key={id} verticalAlign='middle' style={{backgroundColor: 'white', paddingTop: '10px'}}>
+                <List.Item key={id} style={{backgroundColor: 'white', paddingTop: '10px'}}>
                     <div style={{display: 'flex', padding: '10px'}}>
                     <List.Icon name='tasks' size='large' verticalAlign='middle' color={ completed ? 'green': 'red'} style={{paddingLeft: '10px'}} />
                         <List.Content verticalAlign='middle' style={{flex: 1, paddingBottom: '0px'}}>
@@ -88,12 +111,8 @@ const ListItem = ({assignee, context, value, category, completed, overdue, owner
                                 : ''}
                             {/* </span> */}
                             {/* <span className='metatag'> */}
-                                {assignee ? 
-                                <Label image className='metatag'>
-                                    <img src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
-                                    {/* TODO: fix this */}
-                                    {/* @{assignee.username} */}
-                                </Label>
+                                {assignees.length !== 0 ? 
+                                    renderAssignees()
                                 : ''}
                             {/* </span> */}
                         </div>  

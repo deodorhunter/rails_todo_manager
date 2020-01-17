@@ -10,8 +10,9 @@ module Queries
             #     .or(Task.where(assignee_id: user_id))
             #     .order(created_at: :desc)
             user = User.find(user_id)
-            
+            debugger
             all_tasks = user.assigned_tasks.to_a + user.tasks.to_a
+            all_tasks.sort_by { |a| a['created_at'].to_i }.reverse
             # puts all_tasks
         end
 

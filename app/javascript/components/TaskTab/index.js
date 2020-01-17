@@ -10,16 +10,13 @@ import Subscription from '../Subscription';
 
 export default ({data, loading, currentUser, query}) => {
     const ref = createRef();
-    console.log(data, loading);
+    console.log('[TaskTab] rendering with data ', data);
     return(
         <div style={{marginTop: '10px'}}>
-          <Query query={query.query} variables={query.variables}>
-            {({data, loading, subscribeToMore}) => {
-              console.log(data, loading)
-              return(
+         
                 <div>
                 <List relaxed size={'massive'}>
-                  {!data
+                  {(loading || !data)
                     ? (
                         // <Segment loading>
                             <Placeholder>
@@ -40,7 +37,7 @@ export default ({data, loading, currentUser, query}) => {
                         return(
                           <div key={id}>
                             <ListItem 
-                              // assignee={assignee} 
+                              assignees={assignees} 
                               owner={owner} 
                               overdue={overdue}
                               value={value} 
@@ -55,12 +52,8 @@ export default ({data, loading, currentUser, query}) => {
                       )}  
                     )}
                 </List>
-                <Subscription subscribeToMore={subscribeToMore}/>
                 </div>
-              )
-            }}
-            
-          </Query>
+          
           {/* <Grid textAlign='left' columns={3} centered> */}
             {/* <Grid.Column> */}
               

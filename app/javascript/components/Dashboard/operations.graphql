@@ -27,6 +27,7 @@ query OwnedTasksQuery($ownerId: ID!)
             id
             username
         }
+        completed
         overdue
         owner {
             id
@@ -45,6 +46,7 @@ query AssignedTasksQuery($assigneeId: ID!)
             id
             username
         }
+        completed
         overdue
         owner {
             id

@@ -1,0 +1,12 @@
+subscription StatSubscription {
+  statsUpdate {
+    categories{
+      category
+      categoryTotal
+      categoryCompleted
+      percentage
+    }
+    completedCount
+    totalCount
+  }
+}

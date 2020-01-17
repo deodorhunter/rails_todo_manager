@@ -31,7 +31,7 @@ class GraphqlChannel < ApplicationCable::Channel
   private
 
   def execute_query(data)
-    logger.debug "[GraphqlChannel] executing query with query: #{data["query"]}, variables: #{data["variables"]}, operation name: #{data['operationName']}"
+    logger.debug "[GraphqlChannel] executing query: #{data["query"]}, variables: #{data["variables"]}, operation name: #{data['operationName']}"
     TodoManagerSchema.execute(
       query: data["query"],
       context: context,

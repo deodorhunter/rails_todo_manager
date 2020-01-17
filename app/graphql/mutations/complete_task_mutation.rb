@@ -1,3 +1,5 @@
+require 'stats_builder'
+
 module Mutations
     class CompleteTaskMutation < Mutations::BaseMutation
       argument :completed, Boolean, required: true
@@ -17,12 +19,35 @@ module Mutations
         task.completed = completed
 
         if task.save
-            # debugger
+            debugger
             # if task is assigned, notify the user who assigned it
-            if task.owner_id != context[:current_user].id
-                puts "[CompleteTaskMutation] triggering subscription with scope: #{task.owner_id}"
-                TodoManagerSchema.subscriptions.trigger("taskCompleted", {}, task, scope: task.owner_id)
+            # TODO: notify all possible assignees
+            if task.assignees 
+              task.assignees.each do |n|
+                TodoManagerSchema.subscriptions.trigger(
+                  "statsUpdate",
+                  {},
+                  StatsBuilder.build_stats(n.id),
+                  scope: n.id
+                )
+              end
             end
+            # if task.owner_id != context[:current_user].id
+                puts "[CompleteTaskMutation] triggering subscription with scope: #{task.owner_id}"
+                TodoManagerSchema.subscriptions.trigger(
+                  "taskCompleted",
+                  {}, 
+                  task, 
+                  scope: task.owner_id
+                )
+                # TODO: this changes stats to assignee stats, fix it
+                TodoManagerSchema.subscriptions.trigger(
+                  "statsUpdate",
+                  {},
+                  StatsBuilder.build_stats(task.owner_id),
+                  scope: task.owner_id
+                )
+            # end
 
             { task: task }
         else

@@ -10,11 +10,11 @@ module Types
         description: "An assigned task was completed",
         subscription_scope: :current_user_id
       field :stats_update, Types::StatisticsType,
-        null: true,
-        description: "Stats need to be updated after task addition/completion"
+        null: false,
+        description: "Stats need to be updated after task addition/completion",
+        subscription_scope: :current_user_id
         
-      def task_added
-        
+      def task_added 
       end
       def task_completed
       end

@@ -10,14 +10,12 @@ mutation AddTaskMutation(
             completed
             category
             overdue
-            assignee{
+            assignees{
                 id
                 username
-                email
             }
             owner{
                 id
-                email
                 username
             }
         }

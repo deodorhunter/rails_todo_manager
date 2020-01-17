@@ -19,30 +19,30 @@ jane = User.create!(
   password: "123456"
 )
 
-Task.create!(
-  [
-    {
-      value: "Capire RoR !10giorni",  
-      owner: john,
-      overdue: 10.days.from_now,
-      assignee: jane,
-      completed: false,
-      category: nil,
-    },
-    {
-      value: "Sistemare alexa @John #nerd !today",  
-      owner: john,
-      overdue: Date.today,
-      assignee: john,
-      completed: false,
-      category: '#nerd',
-    },
-    {
-      value: "LAN party al Rune !2giorni #nerd",  
-      owner: jane,
-      overdue: 2.days.from_now,
-      assignee: nil,
-      completed: false,
-      category: '#nerd',
-    },
-])
+# Task.create!(
+#   [
+#     {
+#       value: "Capire RoR !10giorni",  
+#       owner: john,
+#       overdue: 10.days.from_now,
+#       assignees: jane,
+#       completed: false,
+#       category: nil,
+#     },
+#     {
+#       value: "Sistemare alexa @John #nerd !today",  
+#       owner: john,
+#       overdue: Date.today,
+#       assignee: john,
+#       completed: false,
+#       category: '#nerd',
+#     },
+#     {
+#       value: "LAN party al Rune !2giorni #nerd",  
+#       owner: jane,
+#       overdue: 2.days.from_now,
+#       assignee: nil,
+#       completed: false,
+#       category: '#nerd',
+#     },
+# ])

@@ -5,7 +5,7 @@ subscription TaskSubscription {
     completed
     value
     id
-    assignee{
+    assignees{
         id
         username
     }
@@ -21,7 +21,7 @@ subscription TaskSubscription {
     completed
     value
     id
-    assignee{
+    assignees{
         id
         username
     }
@@ -30,4 +30,5 @@ subscription TaskSubscription {
       username
     }
   }
+
 }
