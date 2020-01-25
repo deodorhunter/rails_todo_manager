@@ -1,0 +1,31 @@
+mutation AddTimeEntryMutation(
+    $time: Int!
+    $taskId: String!
+){
+    addTimeEntry(
+        time: $time
+        taskId: $taskId
+    ){
+        timeEntry{
+            user{
+                id
+                username
+            }
+            time
+            createdAt
+        }
+    }
+}
+
+query TaskTimeEntries($taskId: ID!, $userId: ID!) {
+    taskTimeDetails(taskId: $taskId, userId: $userId) {
+      timeEntries{
+    		time
+    		user{
+        	    id
+        	    username
+      	    }
+            createdAt
+      }
+    }
+  }

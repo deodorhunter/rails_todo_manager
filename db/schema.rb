@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_09_170607) do
+ActiveRecord::Schema.define(version: 2020_01_23_124915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -38,6 +38,16 @@ ActiveRecord::Schema.define(version: 2020_01_09_170607) do
     t.index ["owner_id"], name: "index_tasks_on_owner_id"
   end
 
+  create_table "time_entries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "task_id", null: false
+    t.uuid "user_id", null: false
+    t.bigint "time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["task_id"], name: "index_time_entries_on_task_id"
+    t.index ["user_id"], name: "index_time_entries_on_user_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "username", null: false
     t.string "email", null: false
@@ -48,4 +58,6 @@ ActiveRecord::Schema.define(version: 2020_01_09_170607) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "time_entries", "tasks"
+  add_foreign_key "time_entries", "users"
 end

@@ -6,7 +6,8 @@ module Types
     field :assignedTasks, resolver: Queries::AssignedTasks
     field :ownedTasks, resolver: Queries::OwnedTasks
     field :users, resolver: Queries::Users
-    field :statistics, resolver:Queries::Statistics
+    field :statistics, resolver: Queries::Statistics
+    field :taskTimeDetails, resolver: Queries::TaskTimeEntriesQuery
 
     field :me, Types::UserType, description: "Returns current logged user", null: true
     def me

@@ -26,15 +26,13 @@ Rspec.describe Mutations::AddTaskMutation, type: :mutation do
                         completed
                         category
                         overdue
-                        assignee{
-                        id
-                        username
-                        email
+                        assignees{
+                            id
+                            username
                         }
                         owner{
-                        id
-                        email
-                        username
+                            id
+                            username
                         }
                     }
                 }
@@ -52,12 +50,12 @@ Rspec.describe Mutations::AddTaskMutation, type: :mutation do
             freeze_time
             mutation(
                 mutation_string,
-                variables: {
-                    # String: {
-                        value: "Test task @JD !tomorrow #test"
-                    # }
+                variables:{
+                    "value": "Test task @JD !tomorrow #test"
                 },
-                context: {current_user: user}
+                context:{
+                    current_user: user
+                }
             )
         end
 
@@ -66,7 +64,9 @@ Rspec.describe Mutations::AddTaskMutation, type: :mutation do
         end
   
         it 'should return no errors' do
+
           puts gql_response.errors  
+          debugger
           expect(gql_response.errors).to be_nil
         end
   

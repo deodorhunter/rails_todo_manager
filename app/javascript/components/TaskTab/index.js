@@ -8,14 +8,18 @@ import Subscription from '../Subscription';
 
 
 
-export default ({data, loading, currentUser, query}) => {
+export default ({data, loading, currentUser, query, toggleTaskDetail}) => {
     const ref = createRef();
     console.log('[TaskTab] rendering with data ', data);
+    const selectTask = (id) =>{
+      console.log('[TaskTab] about to call details for task :', data.find(task => task.id === id))
+      toggleTaskDetail(data.find(task => task.id === id))
+    }
     return(
         <div style={{marginTop: '10px'}}>
          
                 <div>
-                <List relaxed size={'massive'}>
+                <List relaxed size={'massive'} selection animated>
                   {(loading || !data)
                     ? (
                         // <Segment loading>
@@ -46,6 +50,7 @@ export default ({data, loading, currentUser, query}) => {
                               id={id}
                               currentUser={currentUser}
                               context={query}
+                              selectTask={selectTask}
                             />
                             <Divider hidden style={{margin: '8px'}}/>     
                           </div>       

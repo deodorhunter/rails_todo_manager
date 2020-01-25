@@ -13,12 +13,12 @@ RSpec.describe Queries::AllUserTasks, type: :query do
         unfreeze_time
     end
 
-    let!(:assignee) {create(:user, username: 'Martina', email: 'martina@example.com')}
+    let!(:assignee) {[create(:user, username: 'Martina', email: 'martina@example.com')]}
     let!(:owner) {create(:user)}
     let!(:tasks) { 
         [
           create(:task,  owner: owner, value: 'Test owned task @JD !domani #test', category: '#test'),
-          create(:task, assignee: assignee, owner: owner, value: 'Test assigned task @JD !domani #test', category: '#test')
+          create(:task, assignees: assignee, owner: owner, value: 'Test assigned task @JD !domani #test', category: '#test')
         ] 
     }
     let(:query_type) {"allUserTasks"}
@@ -29,7 +29,7 @@ RSpec.describe Queries::AllUserTasks, type: :query do
           value
           overdue
           category
-          assignee{
+          assignees{
             id
             username
           }
@@ -62,7 +62,7 @@ RSpec.describe Queries::AllUserTasks, type: :query do
         },
         {
             'id'              => tasks[1].id,
-            'assignee'        => assignee.as_json(except: 
+            'assignees'        => assignees.as_json(except: 
                                     ['email','password_digest', 'created_at', 'updated_at']
                                 ),
             'category'        => '#test',  

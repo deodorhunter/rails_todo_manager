@@ -1,11 +1,11 @@
 import React, {useState, createRef} from 'react';
 import {UserStatistics} from './operations.graphql';
-import {Grid, Ref, Menu, Rail, Progress, Segment, Header, Statistic} from 'semantic-ui-react';
+import {Grid, Ref, Menu, Button, Progress, Segment, Header, Statistic} from 'semantic-ui-react';
 import { Query } from 'react-apollo';
 import StatsSubscription from '../StatsSubscription';
 
 
-const StatsRail = ({currentUser, data, loading}) => {
+const StatsRail = ({currentUser, data, loading, goToReport}) => {
     const getTopCategory = ({categories}) =>  (
         categories.sort((a,b) => a.categoryTotal > b.categoryTotal)[0]
     )
@@ -92,7 +92,7 @@ const StatsRail = ({currentUser, data, loading}) => {
                                             color='green'/>
                                     : ''}
                                 </Segment>
-                                <Segment size='large'>
+                                <Segment size='large' style={{paddingBottom: 0}}>
                                     <div style={{display:'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                                         <Header as='h3' floated="left">
                                             Least completed category:
@@ -111,8 +111,22 @@ const StatsRail = ({currentUser, data, loading}) => {
                                             progress='ratio' 
                                             color='red'/>
                                     : ''}
+                                    <Button 
+                                        compact 
+                                        floated='right'
+                                        onClick={() => goToReport()}
+                                        style={{
+                                            border: 0,
+                                            backgroundColor: 'white',
+                                            paddingRight: 0,
+                                            paddingBottom: 14,
+                                            fontSize: 16,
+                                            marginTop: 14
+                                        }}
+                                    >Go to reports →</Button>
                                 </Segment>
                                 </Segment.Group>
+                                
                             </div>
                         {/* ) */}
                     {/* } */}

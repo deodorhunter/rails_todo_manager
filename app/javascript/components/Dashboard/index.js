@@ -1,8 +1,10 @@
 // app/javascript/components/Library/index.js
 import React, {useState, createRef} from 'react';
 import AddTaskForm from '../AddTaskForm';
-import {AllTasksQuery, OwnedTasksQuery, AssignedTasksQuery} from './operations.graphql';
+import { useApolloClient } from "@apollo/react-hooks";
+import {AllTasksQuery} from './operations.graphql';
 import {UserStatistics} from '../StatsRail/operations.graphql';
+import {TaskTimeEntries} from '../DetailsRail/operations.graphql';
 import {Grid, Ref, Menu, Rail, Sticky, Image, Header} from 'semantic-ui-react';
 import TaskTab from '../TaskTab';
 import UserInfo from '../UserInfo';
@@ -10,18 +12,22 @@ import { Query } from 'react-apollo';
 import Subscription from '../Subscription';
 import StatsRail from '../StatsRail';
 import StatsSubscription from '../StatsSubscription';
+import StatsPage from '../StatsPage';
+import DetailsRail from '../DetailsRail';
 
 
 export default ({currentUser}) => {
   const [activeTab, setActiveTab] = useState('ALL');
+  const [selectedTask, setSelectedTask] = useState(null);
   const ref = createRef();
-  const createContextData = (data) => {
+  const client = useApolloClient();
+
+  const createContextData = (data = null) => {
     switch (activeTab) {
       case 'ALL':
         return data['allUserTasks']
         
       case 'OWNED':
-        // console.log(data['allUserTasks'], data['allUserTasks'].filter( el => el.owner.id === currentUser.id) )
         return data['allUserTasks'].filter( el => {
           if(el.hasOwnProperty('owner') && el.owner) 
             return el.owner.id === currentUser.id
@@ -29,13 +35,24 @@ export default ({currentUser}) => {
         
       case 'ASSIGNED':
         // debugger
-        const temp = data['allUserTasks'].filter( el => {
+        return data['allUserTasks'].filter( el => {
           if(el.hasOwnProperty('assignees') && el.assignees)
             
             return el.assignees.find( ass => ass.id === currentUser.id)
         })
-        console.log(temp)
-        return temp
+      case 'REPORT':
+        try{
+          const cachedStats = client.readQuery({
+            query: UserStatistics,
+            variables: {
+              'userId': currentUser.id
+            }
+          })
+          console.log(cachedStats);
+          return cachedStats;
+        }catch(e){
+          console.log(e)
+        }
       default:
         break;
     }
@@ -87,6 +104,7 @@ export default ({currentUser}) => {
                 <TaskTab
                   data={contextData}
                   currentUser={currentUser}
+                  toggleTaskDetail={toggleTaskDetail}
                   // loading={loading}
                   // query={queryObj}
                 />
@@ -98,7 +116,11 @@ export default ({currentUser}) => {
     // </Tab.Pane>
     )
   }
-  
+  const goToReport = () => setActiveTab('REPORT')
+  const toggleTaskDetail = (task) => {
+    console.log('[Dashboard:toggleTaskDetail] setting selected task: ', task);
+    setSelectedTask(task);
+  }
   return (
     <div>
       <Menu pointing secondary size='massive' inverted color={'teal'}
@@ -121,6 +143,13 @@ export default ({currentUser}) => {
         <Menu.Item
           name='ASSIGNED'
           active={activeTab === 'ASSIGNED'}
+          onClick={(e, { name }) => setActiveTab(name)}
+          style={{fontSize: '20px'}}
+          // className='ui menu item'
+        />
+        <Menu.Item
+          name='REPORT'
+          active={activeTab === 'REPORT'}
           onClick={(e, { name }) => setActiveTab(name)}
           style={{fontSize: '20px'}}
           // className='ui menu item'
@@ -153,7 +182,12 @@ export default ({currentUser}) => {
                   return(
                     <React.Fragment>
                       <Sticky context={ref} style={{flex: 1}}>
-                        <StatsRail currentUser={currentUser} data={data} loading={loading}/>
+                        <StatsRail 
+                          currentUser={currentUser} 
+                          data={data} 
+                          loading={loading}
+                          goToReport={goToReport}  
+                        />
                       </Sticky>
                       <StatsSubscription subscribeToMore={subscribeToMore}/>
                     </React.Fragment>
@@ -164,25 +198,60 @@ export default ({currentUser}) => {
               </Query>
             </Rail>
           </Ref>
-          <Query query={AllTasksQuery} variables={{'userId': currentUser.id}}>
-            {({ data, loading, subscribeToMore }) => {
-              console.log(data, loading)
-              const contextData = data && !loading ? createContextData(data) : null;
-              return(
-                <div>
-                    {currentUser ? renderSegment(contextData) : ''}
-                    <Subscription subscribeToMore={subscribeToMore}/>
-              </div>
-              )
-            }}
-
-          </Query>
-        
+          {activeTab !== 'REPORT' 
+            ?
+              <Query query={AllTasksQuery} variables={{'userId': currentUser.id}}>
+                {({ data, loading, subscribeToMore }) => {
+                  console.log(data, loading)
+                  const contextData = data && !loading ? createContextData(data) : null;
+                  return(
+                    <div>
+                      {currentUser ? renderSegment(contextData) : ''}
+                      <Subscription subscribeToMore={subscribeToMore}/>
+                  </div>
+                  )
+                }}
+              </Query>
+            :
+              <StatsPage
+                data={createContextData()}
+                currentUser={currentUser}
+              />
+          }
           <Ref innerRef={ref}>
             <Rail position='right' style={{width: '340px', padding: '0px', marginLeft: '35px', marginRight: '35px', display: 'flex'}} >
-                <Sticky context={ref}>
-                <Header as='h3'>This will be home of task detail (and timer start? what does distraction free view mean?)</Header>
-                <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
+                <Sticky context={ref} style={{flex: 1}}> 
+                {selectedTask ? 
+                  <Query 
+                      query={TaskTimeEntries} 
+                      variables={{'taskId': selectedTask.id, 'userId': currentUser.id}}
+                    >
+                    {({data, loading, subscribeToMore}) => {
+                      console.log('[detailsRail] ', data, loading);
+                      if(data && !loading)
+                      {
+                          const railData = {
+                          ...data['taskTimeDetails'],
+                          task: selectedTask,
+                        }
+                        return(
+                          <React.Fragment>
+                            <Sticky context={ref} style={{flex: 1}}>
+                              <DetailsRail
+                                currentUser={currentUser} 
+                                data={railData} 
+                                toggleTaskDetail={toggleTaskDetail}  
+                              />
+                            </Sticky>
+                            <StatsSubscription subscribeToMore={subscribeToMore}/>
+                          </React.Fragment>
+                        )
+                      }
+                      else return null; 
+                    }}
+                  
+                  </Query>
+                  : ''}
                 </Sticky>
             </Rail>
             </Ref>

@@ -28,7 +28,7 @@ Rspec.describe Mutations::CompleteTaskMutation, type: :mutation do
                         completed
                         category
                         overdue
-                        assignee{
+                        assignees{
                             id
                             username
                         }

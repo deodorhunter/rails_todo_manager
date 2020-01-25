@@ -7,12 +7,15 @@ class User < ApplicationRecord
     before_save { self.email = email.downcase }
 
     has_many :assignments
+    has_many :time_entries
+    
     has_many :assigned_tasks, :through => :assignments, dependent: :destroy, source: :task
     # , :foreign_key => 'task_id', :source => :task
     
     # , :class_name => 'Task', :foreign_key => 'assignee_id'
    
     has_many :tasks, :class_name => 'Task', :foreign_key => 'owner_id', dependent: :destroy
+    has_many :task_time_entries, :through => :time_entries, source: :task
 
     validates :email, presence: true, uniqueness: true
     validates :username, presence: true, uniqueness: true, length: { maximum: 50 }

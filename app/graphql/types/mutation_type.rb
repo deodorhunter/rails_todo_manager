@@ -5,5 +5,6 @@ module Types
       field :sign_out, mutation: Mutations::SignOutMutation
       field :add_task, mutation: Mutations::AddTaskMutation
       field :complete_task, mutation: Mutations::CompleteTaskMutation
+      field :add_time_entry, mutation: Mutations::AddTimeEntryMutation
   end
 end

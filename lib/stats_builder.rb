@@ -40,14 +40,10 @@ class StatsBuilder
             order by percentage desc
         SQL
         puts "Executing query #{sql}"
-        begin
-            connection.prepare('stats', sql)
-        rescue  PG::DuplicatePstatement => e
-        end
-        # test_query = connection.exec_prepared('test_stats', [user_id, user_id])
+       
         debugger
-        # puts test_query.inspect
-        return connection.exec_prepared('stats', [user_id, user_id, user_id])
+        return connection.exec_params(sql, [user_id, user_id, user_id])
+        
     end
 
     def self.build_stats(user_id)

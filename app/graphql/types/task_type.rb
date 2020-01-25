@@ -7,6 +7,7 @@ module Types
     field :assignees, [Types::UserType], null: true
     field :category, String, null: true
     field :owner, Types::UserType, null: false
+    field :timeEntries, [Types::TimeEntryType], null: true
   end
 
 end

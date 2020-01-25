@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { StatSubscription } from './operations.graphql';
-import { useApolloClient } from "@apollo/react-hooks";
+
 
 const StatsSubscription = ({ subscribeToMore }) => {
     console.log('porcodio')
   useEffect(() => {
-    debugger
+    // debugger
     return subscribeToMore({
         document: StatSubscription,
         updateQuery: (prev, { subscriptionData }) => {

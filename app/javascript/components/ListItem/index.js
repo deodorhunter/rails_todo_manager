@@ -15,7 +15,8 @@ const ListItem = ({
     overdue, 
     owner, 
     id, 
-    currentUser
+    currentUser,
+    selectTask
 }) => 
 (
     <Mutation mutation={CompleteTaskMutation}>
@@ -78,8 +79,13 @@ const ListItem = ({
                 ))
             }
             return(
-                <List.Item key={id} style={{backgroundColor: 'white', paddingTop: '10px'}}>
-                    <div style={{display: 'flex', padding: '10px'}}>
+                <List.Item 
+                    // as="a"
+                    key={id} 
+                    onClick={() => selectTask(id)}
+                    style={{backgroundColor: 'white', paddingTop: '10px'}}
+                >
+                    <div style={{display: 'flex', padding: '10px',backgroundColor: 'white'}}>
                     <List.Icon name='tasks' size='large' verticalAlign='middle' color={ completed ? 'green': 'red'} style={{paddingLeft: '10px'}} />
                         <List.Content verticalAlign='middle' style={{flex: 1, paddingBottom: '0px'}}>
                         <List.Header as='h2' size='huge' style={{margin: 'auto'}}>{value}</List.Header>
