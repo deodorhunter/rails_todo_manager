@@ -14,13 +14,26 @@ import StatsRail from '../StatsRail';
 import StatsSubscription from '../StatsSubscription';
 import StatsPage from '../StatsPage';
 import DetailsRail from '../DetailsRail';
+import TimeSubscription from '../TimeSubscription';
+import InfoMessage from './InfoMessage';
 
 
 export default ({currentUser}) => {
   const [activeTab, setActiveTab] = useState('ALL');
   const [selectedTask, setSelectedTask] = useState(null);
+  const [messageVisible, setMessageVisible] = useState(false)
+  const [message, setMessage] = useState({})
+  const [messageMode, setMessageMode] = useState('info');
   const ref = createRef();
   const client = useApolloClient();
+
+  const toggleInfoMessage = (visible, message, mode) => {
+    if(visible){
+      setMessageMode(mode);
+      setMessage(message);
+    }
+    setMessageVisible(visible);
+  }
 
   const createContextData = (data = null) => {
     switch (activeTab) {
@@ -221,6 +234,14 @@ export default ({currentUser}) => {
           <Ref innerRef={ref}>
             <Rail position='right' style={{width: '340px', padding: '0px', marginLeft: '35px', marginRight: '35px', display: 'flex'}} >
                 <Sticky context={ref} style={{flex: 1}}> 
+                {messageVisible ? 
+                  <InfoMessage
+                    message={message}
+                    mode={messageMode}
+                    onMessageDismiss={() =>setMessageVisible(!messageVisible)}
+                  />
+                  : null
+                }
                 {selectedTask ? 
                   <Query 
                       query={TaskTimeEntries} 
@@ -231,9 +252,10 @@ export default ({currentUser}) => {
                       if(data && !loading)
                       {
                           const railData = {
-                          ...data['taskTimeDetails'],
-                          task: selectedTask,
-                        }
+                            ...data['taskTimeDetails'],
+                            task: selectedTask,
+                          }
+                        console.log(railData);
                         return(
                           <React.Fragment>
                             <Sticky context={ref} style={{flex: 1}}>
@@ -241,9 +263,11 @@ export default ({currentUser}) => {
                                 currentUser={currentUser} 
                                 data={railData} 
                                 toggleTaskDetail={toggleTaskDetail}  
+                                loading={loading}
+                                toggleInfoMessage={toggleInfoMessage}
                               />
                             </Sticky>
-                            <StatsSubscription subscribeToMore={subscribeToMore}/>
+                            <TimeSubscription subscribeToMore={subscribeToMore}/>
                           </React.Fragment>
                         )
                       }

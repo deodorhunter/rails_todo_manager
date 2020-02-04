@@ -2,7 +2,7 @@ import { Mutation } from "react-apollo";
 import {AllTasksQuery} from '../Dashboard/operations.graphql'
 import React from 'react';
 import {List, Label, Icon, Button} from 'semantic-ui-react';
-import CompleteTaskMutation from './operations.graphql';
+import {CompleteTaskMutation} from './operations.graphql';
 import PropTypes from 'prop-types';
 
 
@@ -28,27 +28,6 @@ const ListItem = ({
                     variables: {
                         id,
                         'completed': true
-                    },
-                    update: (cache, { data: { completeTask } }) => {
-                        const task = completeTask.task;
-                        if (task) {
-                            const contextTasks = cache.readQuery({
-                                query: context.query,
-                                variables: context.variables
-                            });
-
-                            contextTasks.allUserTasks[contextTasks.allUserTasks.findIndex( el => el.id === task.id)] = task;
-                            console.log(contextTasks.allUserTasks);
-                            cache.writeQuery({
-                                query: AllTasksQuery,
-                                variables: {
-                                'userId': currentUser.id
-                                },
-                                data: {
-                                    allUserTasks: contextTasks.allUserTasks
-                                },
-                            });
-                        }
                     },
                 })
             }

@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Segment, Grid, List, Icon, Header, Button} from 'semantic-ui-react';
 import {Mutation, Query} from 'react-apollo';
 import {AddTaskTimeEntry, TaskTimeEntries} from './operations.graphql';
 import moment from 'moment';
+import ActionRow from './ActionRow';
+import Timer from '../Timer';
 
-const DetailsRail = ({data, toggleTaskDetail, currentUser, loading}) => {
+const DetailsRail = ({data, toggleTaskDetail, currentUser, loading, toggleInfoMessage}) => {
+    const [timerActive, setTimerActive] = useState(false);
+    console.log('[DetailsRail] timer is active? ', timerActive)
     const humanizeTime = (createdAt) => {
         const time = moment(createdAt).format('DD-MMM-YY h:mm:ss a');
         console.log(time)
@@ -17,32 +21,65 @@ const DetailsRail = ({data, toggleTaskDetail, currentUser, loading}) => {
         // TODO: find a way to use moment.js for this
         return new Date(time * 1000).toISOString().substr(11, 8)
     }
+    const toggleTimer = (bool) => {
+        setTimerActive(bool);
+    }
+    const renderTimeEntries = (timeEntries) => {
+        if(!timeEntries && loading)
+            return(
+                <div>
+                    loading
+                </div>
+            )
+        else if(timeEntries && !loading && timeEntries.length !== 0 )
+            return (
+            <React.Fragment>
+                <Header as='h3'>Time entries:</Header>
+                <List divided relaxed style={{justifyContent: 'center', padding: 8}}>
+                    {timeEntries.map((te, index) => (
+                        <List.Item key={index}>
+                            <List.Content floated="right">
+                                {timeNormalization(te.time)}
+                            </List.Content>
+                            <Icon 
+                                name='time' 
+                                size='small' 
+                                verticalAlign='middle' 
+                            />
+                            <List.Content>
+                                <List.Header as='a'>
+                                    {te.user.username}
+                                </List.Header>
+                                <List.Description>
+                                    {`On ${humanizeTime(te.createdAt)}`}
+                                </List.Description>
+                            </List.Content>
+                        </List.Item>
+                    ))}
+                </List>
+            </React.Fragment>
+            )
+        else return(
+            null
+        )
+    }
     // TODO: make a function for rendering timeEntries, it's cleaner
     console.log('[DetailsRail] data: ', data);
     const {task, timeEntries} = data;
     return (
-        <Segment style={{display: 'flex', alignItems: 'center', justifyContent:'center', flexDirection: 'row', width: '100%'}}>
-            <Grid style={{flex:1, flexDirection:'row', padding: '14px'}}>
-                <Grid.Row style={{justifyContent: 'space-between', paddingTop: 0}}>
-                    {/* this will be button action row */}
-                    {/* make this row a separate component, with mutations for update/delete */}
-                    <Button.Group>
-                        <Button icon >
-                            <Icon name='checkmark'/>
-                        </Button>
-                        {task && task.owner.id === currentUser.id ? 
-                            <Button icon >
-                                <Icon name="delete"/>
-                            </Button>
-                            : null }
-                    </Button.Group>
-                    <Button.Group>
-                        <Button icon>
-                            <Icon name="clock"/>
-                        </Button>
-                    </Button.Group>
-                </Grid.Row>
-                <Grid.Row style={{flex:1, flexDirection:'row'}}>
+        <Segment style={{display: 'flex', alignItems: 'center', justifyContent:'center', flexDirection: 'row', width: '100%', padding: 0, border: 0}}>
+            {!timerActive ?
+            <Grid style={{flex:1, flexDirection:'row', padding: '16px'}}>
+                <ActionRow 
+                    taskId={task.id} 
+                    taskCompleted={task.completed}
+                    toggleTimer={toggleTimer} 
+                    canDelete={task && task.owner.id === currentUser.id}
+                    currentUser={currentUser}
+                    toggleInfoMessage={toggleInfoMessage}
+                    toggleTaskDetail={toggleTaskDetail}
+                />
+                <Grid.Row style={{flex:1, flexDirection:'row', padding: 10}}>
                     {task ? 
                     <React.Fragment>
                         <Header as='h1' 
@@ -52,7 +89,7 @@ const DetailsRail = ({data, toggleTaskDetail, currentUser, loading}) => {
                         >
                             {task.value}
                         </Header>
-                        <List relaxed style={{width: '100%'}}>
+                        <List relaxed style={{width: '100%', paddingHorizontal: 5}}>
                             {task.category ? <List.Item>
                                 <Icon 
                                     name='tag' 
@@ -117,7 +154,7 @@ const DetailsRail = ({data, toggleTaskDetail, currentUser, loading}) => {
                         </React.Fragment>
                     : null}
                 </Grid.Row>
-                <Grid.Row  style={{justifyContent: 'center'}}>
+                <Grid.Row  style={{justifyContent: 'center', padding: 8}}>
                     {/* <Query 
                         query={TaskTimeEntries} 
                         variables={{'taskId': task.id, 'userId': currentUser.id}}
@@ -127,46 +164,34 @@ const DetailsRail = ({data, toggleTaskDetail, currentUser, loading}) => {
                             const {timeEntries} = data;
                             return(
                                 <React.Fragment> */}
-                                    {timeEntries 
-                                        ? (timeEntries.length !== 0 && !loading ?
-                                        <React.Fragment>
-                                        <Header as='h3'>Time entries:</Header>
-                                        <List divided relaxed style={{justifyContent: 'center'}}>
-                                            {timeEntries.map((te, index) => (
-                                                <List.Item key={index}>
-                                                    <List.Content floated="right">
-                                                        {timeNormalization(te.time)}
-                                                    </List.Content>
-                                                    <Icon 
-                                                        name='time' 
-                                                        size='small' 
-                                                        verticalAlign='middle' 
-                                                    />
-                                                    <List.Content>
-                                                        <List.Header as='a'>
-                                                            {te.user.username}
-                                                        </List.Header>
-                                                        <List.Description>
-                                                            {`On ${humanizeTime(te.createdAt)}`}
-                                                        </List.Description>
-                                                    </List.Content>
-                                                </List.Item>
-                                            ))}
-                                        </List>
-                                        </React.Fragment>
-                                        :
-                                        <div>
-                                            porcodio
-                                        </div>
-                                    ) : null
-                                    }
+                                    {renderTimeEntries(timeEntries)}
+                                    
                                 {/* </React.Fragment> */}
                             {/* ) */}
                         {/* }} */}
 
                     {/* </Query> */}
                 </Grid.Row>
+                <Grid.Row style={{padding: 10, paddingTop:0}}>
+                    <Button 
+                        compact 
+                        floated='left'
+                        onClick={() => toggleTaskDetail(null)}
+                        style={{
+                            border: 0,
+                            backgroundColor: 'white',
+                            padding: 0,
+                            fontSize: 16,
+                            marginTop: 14,
+                        }}
+                    >↵ Dismiss</Button>
+                </Grid.Row>
             </Grid>
+            : <Timer 
+                task={task} 
+                currentUser={currentUser}
+                toggleTimer={toggleTimer}
+              />}
         </Segment>
     )
 }

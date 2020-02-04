@@ -23,3 +23,15 @@ mutation CompleteTaskMutation(
         }
     }
 }
+
+mutation DeleteTaskMutation(
+    $taskId: String!
+){
+    deleteTask(
+        taskId: $taskId
+    ){
+        deletedTask{
+            id
+        }
+    }
+}

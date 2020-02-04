@@ -13,14 +13,30 @@ module Mutations
                 "You need to authenticate to perform this action"
         end
         debugger
+        task = Task.find(task_id)
         time_entry = TimeEntry.new(
             user: context[:current_user],
-            task: Task.find(task_id),
+            task: task,
             time: time
         )
 
         if time_entry.save
-            # TodoManagerSchema.subscriptions.trigger("taskAdded", {}, task)
+            if task.assignees 
+                task.assignees.each do |n|
+                  TodoManagerSchema.subscriptions.trigger(
+                    "timeAdded",
+                    {},
+                    time_entry,
+                    scope: n.id
+                  )
+                end
+            end
+            TodoManagerSchema.subscriptions.trigger(
+                "timeAdded",
+                {}, 
+                time_entry, 
+                scope: task.owner_id
+            )
             return { time_entry: time_entry}
         else
             { errors: time_entry.errors.full_messages }

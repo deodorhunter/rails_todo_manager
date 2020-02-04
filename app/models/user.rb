@@ -15,7 +15,7 @@ class User < ApplicationRecord
     # , :class_name => 'Task', :foreign_key => 'assignee_id'
    
     has_many :tasks, :class_name => 'Task', :foreign_key => 'owner_id', dependent: :destroy
-    has_many :task_time_entries, :through => :time_entries, source: :task
+    has_many :task_time_entries, :through => :time_entries, source: :task, dependent: :destroy
 
     validates :email, presence: true, uniqueness: true
     validates :username, presence: true, uniqueness: true, length: { maximum: 50 }

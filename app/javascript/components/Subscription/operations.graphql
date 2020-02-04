@@ -31,4 +31,9 @@ subscription TaskSubscription {
     }
   }
 
+  taskDeleted {
+    value
+    id
+  }
+
 }

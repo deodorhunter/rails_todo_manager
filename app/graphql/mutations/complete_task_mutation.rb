@@ -40,7 +40,6 @@ module Mutations
                   task, 
                   scope: task.owner_id
                 )
-                # TODO: this changes stats to assignee stats, fix it
                 TodoManagerSchema.subscriptions.trigger(
                   "statsUpdate",
                   {},

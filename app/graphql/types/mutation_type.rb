@@ -6,5 +6,6 @@ module Types
       field :add_task, mutation: Mutations::AddTaskMutation
       field :complete_task, mutation: Mutations::CompleteTaskMutation
       field :add_time_entry, mutation: Mutations::AddTimeEntryMutation
+      field :delete_task, mutation: Mutations::DeleteTaskMutation
   end
 end

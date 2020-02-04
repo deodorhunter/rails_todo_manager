@@ -90,14 +90,16 @@ const Subscription = ({ subscribeToMore }) => {
   //   return cacheUpdate(context, operation)
 
   // }  
+  console.log('[TaskSubscription]')
   useEffect(() => {
       // debugger
     return subscribeToMore({
       document: TaskSubscription,
       updateQuery: (prev, { subscriptionData }) => {
+        debugger
         if (!subscriptionData.data) return prev;
-        const { taskAdded, taskCompleted, statsUpdate } = subscriptionData.data;
-        console.log(prev, subscriptionData, taskAdded, taskCompleted, statsUpdate)
+        const { taskAdded, taskCompleted, taskDeleted } = subscriptionData.data;
+        console.log('[TaskSupscription] : ',prev, subscriptionData, taskAdded, taskCompleted, taskDeleted)
         if (taskAdded) {
           debugger  
           // return updateApolloCache(prev, taskAdded, 'taskAdded');
@@ -116,6 +118,14 @@ const Subscription = ({ subscribeToMore }) => {
           updatedTasks[updatedTasks.findIndex( el => el.id === taskCompleted.id)] = taskCompleted;
           console.log(updatedTasks, prev.allUserTasks)
           return {
+            ...prev,
+            allUserTasks: updatedTasks
+          }
+        }
+        else if(taskDeleted){
+          debugger
+          const updatedTasks = [...prev.allUserTasks].filter( task => task.id !== taskDeleted.id );
+          return{
             ...prev,
             allUserTasks: updatedTasks
           }

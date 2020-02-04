@@ -1,0 +1,10 @@
+subscription TimeEntriesSubscription {
+  timeAdded {
+    user{
+        id
+        username
+    }
+    time
+    createdAt
+  }
+}

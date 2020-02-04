@@ -15,27 +15,6 @@ const AddTaskForm = ({currentUser}) => (
                 variables: {
                     value
                 },
-                update: (cache, { data: { addTask } }) => {
-                    const task = addTask.task;
-                    if (task) {
-                      console.log(cache)
-                      // const currentTasks = cache.readQuery({
-                      //   query: AllTasksQuery,
-                      //   variables: {
-                      //     'userId': currentUser.id
-                      //   }
-                      //  });
-                      // cache.writeQuery({
-                      //     query: AllTasksQuery,
-                      //     variables: {
-                      //       'userId': currentUser.id
-                      //     },
-                      //     data: {
-                      //         allUserTasks: [task, ...currentTasks.allUserTasks]
-                      //     },
-                      // });
-                    }
-                },
             })
         }
       />
